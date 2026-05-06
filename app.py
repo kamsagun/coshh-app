@@ -344,7 +344,7 @@ if st.button("COSHH Değerlendir"):
         ("Employee", temizle(calisan)),
         ("Department", temizle(departman)),
         ("Evaluator", temizle(degerlendiren)),
-        ("Risk Result", temizle(sonuc))
+        ("Risk Result", temizle(sonuc)),
         ("Control Approach", kontrol),
     ]
 
