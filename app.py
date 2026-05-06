@@ -184,22 +184,22 @@ if st.button("COSHH Değerlendir"):
     pdf.set_font("Helvetica", "", 12)
 
     pdf.cell(60,10,"Chemical:",0,0)
-    pdf.cell(120,10,temizle(secili),0,1)
+    pdf.multi_cell(120,10,temizle(secili))
 
     pdf.cell(60,10,"CAS No:",0,0)
-    pdf.cell(120,10,temizle(cas),0,1)
+    pdf.multi_cell(120,10,temizle(cas))
 
     pdf.cell(60,10,"H Codes:",0,0)
     pdf.cell(120,10,temizle(hkod),0,1)
 
     pdf.cell(60,10,"Process:",0,0)
-    pdf.cell(120,10,temizle(islem),0,1)
+    pdf.multi_cell(120,10,temizle(islem))
 
     pdf.cell(60,10,"Duration:",0,0)
-    pdf.cell(120,10,f"{sure} hours",0,1)
+    pdf.multi_cell(120,10,f"{sure} hours")
 
     pdf.cell(60,10,"Amount:",0,0)
-    pdf.cell(120,10,f"{miktar}",0,1)
+    pdf.multi_cell(120,10,f"{miktar}")
 
     pdf.cell(60,10,"Employee:",0,0)
     pdf.cell(120,10,temizle(calisan),0,1)
