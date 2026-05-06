@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 from fpdf import FPDF
@@ -64,7 +63,13 @@ islem = st.selectbox(
 )
 
 sure = st.slider(
-    miktar = st.number_input(
+    "Süre",
+    0,
+    8,
+    1
+)
+
+miktar = st.number_input(
     "Kullanim Miktari (kg/L)",
     min_value=0.0,
     value=1.0
@@ -80,11 +85,6 @@ departman = st.text_input(
 
 degerlendiren = st.text_input(
     "Degerlendiren Kisi"
-)
-    "Süre",
-    0,
-    8,
-    1
 )
 
 havalandirma = st.checkbox(
@@ -109,7 +109,9 @@ if st.button("COSHH Değerlendir"):
         risk += 3
 
     if sure >= 4:
-            if miktar >= 50:
+        risk += 2
+
+    if miktar >= 50:
         risk += 3
 
     elif miktar >= 10:
@@ -117,7 +119,6 @@ if st.button("COSHH Değerlendir"):
 
     elif miktar >= 1:
         risk += 1
-        risk += 2
 
     if not havalandirma:
         risk += 2
@@ -147,8 +148,6 @@ if st.button("COSHH Değerlendir"):
     for o in oneriler:
         st.write("•", o)
 
-    # PDF
-
     pdf = FPDF()
 
     pdf.add_page()
@@ -162,29 +161,6 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     pdf.multi_cell(
-            pdf.multi_cell(
-        190,
-        10,
-        f"Amount: {miktar}"
-    )
-
-    pdf.multi_cell(
-        190,
-        10,
-        f"Employee: {temizle(calisan)}"
-    )
-
-    pdf.multi_cell(
-        190,
-        10,
-        f"Department: {temizle(departman)}"
-    )
-
-    pdf.multi_cell(
-        190,
-        10,
-        f"Evaluator: {temizle(degerlendiren)}"
-    )
         190,
         10,
         f"Chemical: {temizle(secili)}"
@@ -206,6 +182,30 @@ if st.button("COSHH Değerlendir"):
         190,
         10,
         f"Risk: {temizle(sonuc)}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Amount: {miktar}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Employee: {temizle(calisan)}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Department: {temizle(departman)}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Evaluator: {temizle(degerlendiren)}"
     )
 
     pdf.ln(5)
@@ -231,4 +231,3 @@ if st.button("COSHH Değerlendir"):
             f,
             file_name=filename
         )
-
