@@ -190,7 +190,7 @@ if st.button("COSHH Değerlendir"):
     pdf.cell(120,10,temizle(cas),0,1)
 
     pdf.cell(60,10,"H Codes:",0,0)
-    pdf.multi_cell(120,10,temizle(hkod))
+    pdf.cell(120,10,temizle(hkod),0,1)
 
     pdf.cell(60,10,"Process:",0,0)
     pdf.cell(120,10,temizle(islem),0,1)
