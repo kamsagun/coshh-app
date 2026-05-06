@@ -249,7 +249,20 @@ if st.button("COSHH Değerlendir"):
 
     if not koruyucu:
         risk += 1
+    # -------------------------
+    # COSHH Control Approach
+    # -------------------------
 
+    kontrol = "1"
+
+    if risk >= 15:
+        kontrol = "4"
+
+    elif risk >= 10:
+        kontrol = "3"
+
+    elif risk >= 5:
+        kontrol = "2"
     # Risk Sonucu
 
     if risk <= 5:
@@ -262,7 +275,7 @@ if st.button("COSHH Değerlendir"):
         sonuc = "YUKSEK RISK"
 
     st.header(sonuc)
-
+    st.subheader(f"CONTROL APPROACH {kontrol}")
     # -------------------------
     # Öneriler
     # -------------------------
@@ -271,7 +284,14 @@ if st.button("COSHH Değerlendir"):
 
     if not havalandirma:
         oneriler.append("Lokal havalandirma onerilir")
+    if kontrol == "2":
+        oneriler.append("Genel havalandirma yeterli olabilir")
 
+    if kontrol == "3":
+        oneriler.append("Lokal emis sistemi gerekli")
+
+    if kontrol == "4":
+        oneriler.append("Containment ve uzman kontrolu gerekli")
     if not resp:
         oneriler.append("Respirator onerilir")
 
@@ -325,7 +345,7 @@ if st.button("COSHH Değerlendir"):
         ("Department", temizle(departman)),
         ("Evaluator", temizle(degerlendiren)),
         ("Risk Result", temizle(sonuc))
-
+        ("Control Approach", kontrol),
     ]
 
     for label, value in bilgiler:
