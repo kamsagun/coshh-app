@@ -176,7 +176,23 @@ yuzsiperi = st.checkbox(
 koruyucu = st.checkbox(
     "Koruyucu Kıyafet"
 )
+    # -------------------------
+    # Hazard Group
+    # -------------------------
 
+    hazard_group = "A"
+
+    if "H350" in hkod or "H340" in hkod:
+        hazard_group = "E"
+
+    elif "H330" in hkod or "H310" in hkod:
+        hazard_group = "D"
+
+    elif "H315" in hkod or "H319" in hkod:
+        hazard_group = "B"
+
+    elif "H335" in hkod or "H336" in hkod:
+        hazard_group = "C"
 # -------------------------
 # Risk Hesabı
 # -------------------------
@@ -276,6 +292,7 @@ if st.button("COSHH Değerlendir"):
 
     st.header(sonuc)
     st.subheader(f"CONTROL APPROACH {kontrol}")
+      st.write(f"Hazard Group: {hazard_group}")
     # -------------------------
     # Öneriler
     # -------------------------
@@ -346,6 +363,7 @@ if st.button("COSHH Değerlendir"):
         ("Evaluator", temizle(degerlendiren)),
         ("Risk Result", temizle(sonuc)),
         ("Control Approach", kontrol),
+        ("Hazard Group", hazard_group),
     ]
 
     for label, value in bilgiler:
