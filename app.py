@@ -173,94 +173,85 @@ if st.button("COSHH Değerlendir"):
 
     pdf.add_page()
 
-    pdf.set_font("Helvetica", size=14)
+    pdf.set_auto_page_break(auto=True, margin=15)
 
-    pdf.cell(190,10,"COSHH REPORT",ln=True)
+    pdf.set_font("Helvetica", "B", 18)
 
-    pdf.cell(190,10,f"Date: {datetime.now()}",ln=True)
+    pdf.cell(190, 12, "COSHH RISK REPORT", ln=True)
+
+    pdf.ln(10)
+
+    pdf.set_font("Helvetica", "", 12)
+
+    pdf.cell(60,10,"Chemical:",0,0)
+    pdf.cell(120,10,temizle(secili),0,1)
+
+    pdf.cell(60,10,"CAS No:",0,0)
+    pdf.cell(120,10,temizle(cas),0,1)
+
+    pdf.cell(60,10,"H Codes:",0,0)
+    pdf.multi_cell(120,10,temizle(hkod))
+
+    pdf.cell(60,10,"Process:",0,0)
+    pdf.cell(120,10,temizle(islem),0,1)
+
+    pdf.cell(60,10,"Duration:",0,0)
+    pdf.cell(120,10,f"{sure} hours",0,1)
+
+    pdf.cell(60,10,"Amount:",0,0)
+    pdf.cell(120,10,f"{miktar}",0,1)
+
+    pdf.cell(60,10,"Employee:",0,0)
+    pdf.cell(120,10,temizle(calisan),0,1)
+
+    pdf.cell(60,10,"Department:",0,0)
+    pdf.cell(120,10,temizle(departman),0,1)
+
+    pdf.cell(60,10,"Evaluator:",0,0)
+    pdf.cell(120,10,temizle(degerlendiren),0,1)
 
     pdf.ln(5)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Chemical: {temizle(secili)}"
-    )
+    pdf.set_font("Helvetica", "B", 14)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"CAS: {temizle(cas)}"
-    )
+    pdf.cell(190,10,"PPE",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"H Codes: {temizle(hkod)}"
-    )
+    pdf.set_font("Helvetica","",12)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Risk: {temizle(sonuc)}"
-    )
+    pdf.cell(190,10,f"Respirator: {resp}",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Amount: {miktar}"
-    )
+    pdf.cell(190,10,f"Gloves: {eldiven}",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Employee: {temizle(calisan)}"
-    )
+    pdf.cell(190,10,f"Goggles: {gozluk}",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Department: {temizle(departman)}"
-    )
+    pdf.cell(190,10,f"Face Shield: {yuzsiperi}",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Evaluator: {temizle(degerlendiren)}"
-    )
-    pdf.multi_cell(
-        190,
-        10,
-        f"Gloves: {eldiven}"
-    )
+    pdf.cell(190,10,f"Protective Clothing: {koruyucu}",ln=True)
 
-    pdf.multi_cell(
-        190,
-        10,
-        f"Goggles: {gozluk}"
-    )
-
-    pdf.multi_cell(
-        190,
-        10,
-        f"Face Shield: {yuzsiperi}"
-    )
-
-    pdf.multi_cell(
-        190,
-        10,
-        f"Protective Clothing: {koruyucu}"
-    )
     pdf.ln(5)
+
+    pdf.set_font("Helvetica","B",14)
+
+    pdf.cell(190,10,"Risk Result",ln=True)
+
+    pdf.set_font("Helvetica","",12)
+
+    pdf.cell(190,10,temizle(sonuc),ln=True)
+
+    pdf.ln(5)
+
+    pdf.set_font("Helvetica","B",14)
 
     pdf.cell(190,10,"Recommendations",ln=True)
+
+    pdf.set_font("Helvetica","",12)
 
     for o in oneriler:
 
         pdf.multi_cell(
             190,
             10,
-            temizle(o)
+            f"- {temizle(o)}"
         )
 
     filename = "COSHH_REPORT.pdf"
