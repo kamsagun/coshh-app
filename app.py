@@ -94,7 +94,21 @@ havalandirma = st.checkbox(
 resp = st.checkbox(
     "Respiratör Kullanılıyor"
 )
+eldiven = st.checkbox(
+    "Kimyasal Eldiven"
+)
 
+gozluk = st.checkbox(
+    "Koruyucu Gozluk"
+)
+
+yuzsiperi = st.checkbox(
+    "Yuz Siperi"
+)
+
+koruyucu = st.checkbox(
+    "Koruyucu Kiyafet"
+)
 if st.button("COSHH Değerlendir"):
 
     risk = 0
@@ -125,7 +139,14 @@ if st.button("COSHH Değerlendir"):
 
     if not resp:
         risk += 2
+    if not eldiven:
+        risk += 1
 
+    if not gozluk:
+        risk += 1
+
+    if not koruyucu:
+        risk += 1
     if risk <= 3:
         sonuc = "DUSUK RISK"
 
@@ -207,7 +228,29 @@ if st.button("COSHH Değerlendir"):
         10,
         f"Evaluator: {temizle(degerlendiren)}"
     )
+    pdf.multi_cell(
+        190,
+        10,
+        f"Gloves: {eldiven}"
+    )
 
+    pdf.multi_cell(
+        190,
+        10,
+        f"Goggles: {gozluk}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Face Shield: {yuzsiperi}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Protective Clothing: {koruyucu}"
+    )
     pdf.ln(5)
 
     pdf.cell(190,10,"Recommendations",ln=True)
