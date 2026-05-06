@@ -64,6 +64,23 @@ islem = st.selectbox(
 )
 
 sure = st.slider(
+    miktar = st.number_input(
+    "Kullanim Miktari (kg/L)",
+    min_value=0.0,
+    value=1.0
+)
+
+calisan = st.text_input(
+    "Calisan Adi"
+)
+
+departman = st.text_input(
+    "Departman"
+)
+
+degerlendiren = st.text_input(
+    "Degerlendiren Kisi"
+)
     "Süre",
     0,
     8,
@@ -92,6 +109,14 @@ if st.button("COSHH Değerlendir"):
         risk += 3
 
     if sure >= 4:
+            if miktar >= 50:
+        risk += 3
+
+    elif miktar >= 10:
+        risk += 2
+
+    elif miktar >= 1:
+        risk += 1
         risk += 2
 
     if not havalandirma:
@@ -137,6 +162,29 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     pdf.multi_cell(
+            pdf.multi_cell(
+        190,
+        10,
+        f"Amount: {miktar}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Employee: {temizle(calisan)}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Department: {temizle(departman)}"
+    )
+
+    pdf.multi_cell(
+        190,
+        10,
+        f"Evaluator: {temizle(degerlendiren)}"
+    )
         190,
         10,
         f"Chemical: {temizle(secili)}"
