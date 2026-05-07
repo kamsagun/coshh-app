@@ -6,10 +6,9 @@ import streamlit as st
 import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
-from PIL import Image
 
 # =====================================================
-# TÜRKÇE KARAKTER TEMİZLE
+# TURKCE KARAKTER
 # =====================================================
 
 def temizle(text):
@@ -90,93 +89,31 @@ islem = st.selectbox(
         "Püskürtme",
         "Isıtma",
         "Dolum",
-        "Numune Alma",
         "Temizlik"
     ]
 )
 
 sure = st.slider(
-    "Çalışma Süresi (Saat)",
+    "Çalışma Süresi",
     1,
     12,
     1
 )
 
 miktar = st.number_input(
-    "Kullanım Miktarı (kg/L)",
+    "Kullanım Miktarı",
     min_value=0.0,
     value=1.0
 )
 
-# =====================================================
-# QUANTITY BAND
-# =====================================================
-
-if miktar < 1:
-
-    miktar_band = "Small"
-
-elif miktar < 100:
-
-    miktar_band = "Medium"
-
-else:
-
-    miktar_band = "Large"
-
-# =====================================================
-# EXPOSURE
-# =====================================================
-
 maruziyet = st.selectbox(
-    "Maruziyet Seviyesi",
+    "Maruziyet",
     [
         "Düşük",
         "Orta",
         "Yüksek"
     ]
 )
-
-ucuculuk = st.selectbox(
-    "Uçuculuk / Tozuma",
-    [
-        "Düşük",
-        "Orta",
-        "Yüksek"
-    ]
-)
-
-# =====================================================
-# WORK ENVIRONMENT
-# =====================================================
-
-st.subheader("Çalışma Ortamı")
-
-kapali_alan = st.checkbox("Kapalı Alan")
-sicak_islem = st.checkbox("Sıcak İşlem")
-vardiya = st.checkbox("Uzun Vardiya")
-yetersiz_hijyen = st.checkbox("Yetersiz Hijyen")
-dar_alan = st.checkbox("Dar Alan")
-
-# =====================================================
-# PERSONNEL
-# =====================================================
-
-st.subheader("Personel Bilgileri")
-
-calisan = st.text_input("Çalışan")
-departman = st.text_input("Departman")
-degerlendiren = st.text_input("Değerlendiren")
-
-# =====================================================
-# VENTILATION
-# =====================================================
-
-st.subheader("Havalandırma")
-
-lokal = st.checkbox("Lokal Havalandırma")
-genel = st.checkbox("Genel Havalandırma")
-lev = st.checkbox("LEV Sistemi")
 
 # =====================================================
 # PPE
@@ -199,7 +136,6 @@ st.divider()
 st.write("CAS:", cas)
 st.write("H Kodları:", hkod)
 st.write("Fiziksel Hal:", fiziksel)
-st.write("Miktar Bandı:", miktar_band)
 
 # =====================================================
 # BUTTON
@@ -207,11 +143,11 @@ st.write("Miktar Bandı:", miktar_band)
 
 if st.button("COSHH Değerlendir"):
 
-    risk = 0
+    # =====================================================
+    # RISK
+    # =====================================================
 
-    # =====================================================
-    # H CODES
-    # =====================================================
+    risk = 0
 
     if "H350" in hkod:
         risk += 6
@@ -222,126 +158,23 @@ if st.button("COSHH Değerlendir"):
     if "H330" in hkod:
         risk += 5
 
-    if "H334" in hkod:
-        risk += 5
-
-    if "H317" in hkod:
-        risk += 3
-
     if "H314" in hkod:
         risk += 4
 
-    if "H315" in hkod:
-        risk += 2
-
-    if "H319" in hkod:
-        risk += 2
-
-    # =====================================================
-    # PROCESS
-    # =====================================================
+    if "H373" in hkod:
+        risk += 3
 
     if islem == "Püskürtme":
-        risk += 5
-
-    elif islem == "Isıtma":
         risk += 4
-
-    elif islem == "Dolum":
-        risk += 2
-
-    elif islem == "Temizlik":
-        risk += 2
-
-    # =====================================================
-    # DURATION
-    # =====================================================
 
     if sure >= 8:
         risk += 3
 
-    elif sure >= 4:
-        risk += 2
-
-    # =====================================================
-    # AMOUNT
-    # =====================================================
-
     if miktar >= 100:
-        risk += 4
-
-    elif miktar >= 10:
-        risk += 2
-
-    elif miktar >= 1:
-        risk += 1
-
-    # =====================================================
-    # PHYSICAL STATE
-    # =====================================================
-
-    fiziksel_lower = fiziksel.lower()
-
-    if "gaz" in fiziksel_lower:
-        risk += 5
-
-    elif "buhar" in fiziksel_lower:
-        risk += 4
-
-    elif "toz" in fiziksel_lower:
-        risk += 4
-
-    elif "sivi" in fiziksel_lower:
-        risk += 1
-
-    # =====================================================
-    # EXPOSURE
-    # =====================================================
+        risk += 3
 
     if maruziyet == "Yüksek":
         risk += 4
-
-    elif maruziyet == "Orta":
-        risk += 2
-
-    # =====================================================
-    # VOLATILITY
-    # =====================================================
-
-    if ucuculuk == "Yüksek":
-        risk += 4
-
-    elif ucuculuk == "Orta":
-        risk += 2
-
-    # =====================================================
-    # ENVIRONMENT
-    # =====================================================
-
-    if kapali_alan:
-        risk += 3
-
-    if sicak_islem:
-        risk += 2
-
-    if vardiya:
-        risk += 1
-
-    if yetersiz_hijyen:
-        risk += 2
-
-    if dar_alan:
-        risk += 2
-
-    # =====================================================
-    # CONTROL EFFECT
-    # =====================================================
-
-    if not lokal:
-        risk += 2
-
-    if not lev:
-        risk += 3
 
     if not resp:
         risk += 2
@@ -354,7 +187,7 @@ if st.button("COSHH Değerlendir"):
 
         sonuc = "DUSUK RISK"
 
-    elif risk <= 22:
+    elif risk <= 20:
 
         sonuc = "ORTA RISK"
 
@@ -369,35 +202,26 @@ if st.button("COSHH Değerlendir"):
     hazard_group = "A"
 
     if (
-        "H300" in hkod or
-        "H310" in hkod or
-        "H330" in hkod or
-        "H340" in hkod or
-        "H350" in hkod
+        "H350" in hkod or
+        "H340" in hkod
     ):
 
         hazard_group = "E"
 
     elif (
-        "H301" in hkod or
-        "H311" in hkod or
-        "H331" in hkod or
-        "H334" in hkod
+        "H330" in hkod
     ):
 
         hazard_group = "D"
 
     elif (
-        "H314" in hkod or
-        "H318" in hkod
+        "H314" in hkod
     ):
 
         hazard_group = "C"
 
     elif (
-        "H315" in hkod or
-        "H319" in hkod or
-        "H317" in hkod
+        "H373" in hkod
     ):
 
         hazard_group = "B"
@@ -429,12 +253,15 @@ if st.button("COSHH Değerlendir"):
     ghs = []
 
     if "H314" in hkod:
+
         ghs.append("GHS05")
 
     if "H315" in hkod or "H319" in hkod:
+
         ghs.append("GHS07")
 
     if "H330" in hkod:
+
         ghs.append("GHS06")
 
     if (
@@ -442,54 +269,57 @@ if st.button("COSHH Değerlendir"):
         "H350" in hkod or
         "H373" in hkod
     ):
+
         ghs.append("GHS08")
+
     # =====================================================
-# RECOMMENDATIONS
-# =====================================================
+    # RECOMMENDATIONS
+    # =====================================================
 
-oneriler = []
+    oneriler = []
 
-if sonuc == "YUKSEK RISK":
+    if sonuc == "YUKSEK RISK":
 
-    oneriler.append(
-        "Kapali sistem dusunulmeli"
-    )
+        oneriler.append(
+            "Kapali sistem dusunulmeli"
+        )
 
-if islem == "Püskürtme":
+    if islem == "Püskürtme":
 
-    oneriler.append(
-        "LEV sistemi onerilir"
-    )
+        oneriler.append(
+            "LEV sistemi onerilir"
+        )
 
-if "H314" in hkod:
+    if "H314" in hkod:
 
-    oneriler.append(
-        "Yuz siperi kullanilmali"
-    )
+        oneriler.append(
+            "Yuz siperi kullanilmali"
+        )
 
-if "H373" in hkod:
+    if "H373" in hkod:
 
-    oneriler.append(
-        "Saglik gozetimi onerilir"
-    )
+        oneriler.append(
+            "Saglik gozetimi onerilir"
+        )
 
-if not resp:
+    if not resp:
 
-    oneriler.append(
-        "Respirator onerilir"
-    )
+        oneriler.append(
+            "Respirator onerilir"
+        )
 
-if not eldiven:
+    if not eldiven:
 
-    oneriler.append(
-        "Kimyasal eldiven onerilir"
-    )
+        oneriler.append(
+            "Kimyasal eldiven onerilir"
+        )
 
-if not gozluk:
+    if not gozluk:
 
-    oneriler.append(
-        "Koruyucu gozluk onerilir"
-    )
+        oneriler.append(
+            "Koruyucu gozluk onerilir"
+        )
+
     # =====================================================
     # RESULT SCREEN
     # =====================================================
@@ -513,14 +343,19 @@ if not gozluk:
     st.write(kontrol)
 
     # =====================================================
-    # GHS ICONS SCREEN
+    # RECOMMENDATION SCREEN
     # =====================================================
 
     st.subheader("Öneriler")
+
     for o in oneriler:
 
         st.write("•", o)
-  
+
+    # =====================================================
+    # GHS SCREEN
+    # =====================================================
+
     st.subheader("GHS Pictograms")
 
     for g in ghs:
@@ -593,9 +428,7 @@ if not gozluk:
         ("Process", temizle(islem)),
         ("Duration", f"{sure} hours"),
         ("Amount", str(miktar)),
-        ("Quantity Band", miktar_band),
         ("Exposure", temizle(maruziyet)),
-        ("Volatility", temizle(ucuculuk)),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
         ("Control Approach", kontrol)
@@ -632,11 +465,44 @@ if not gozluk:
             1
         )
 
+    # =====================================================
+    # PDF RECOMMENDATIONS
+    # =====================================================
+
     pdf.ln(10)
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "Recommendations",
+        ln=True
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
+
+    for o in oneriler:
+
+        pdf.multi_cell(
+            180,
+            8,
+            f"- {temizle(o)}"
+        )
 
     # =====================================================
     # PDF GHS
     # =====================================================
+
+    pdf.ln(10)
 
     pdf.set_font(
         "Helvetica",
@@ -700,7 +566,7 @@ if not gozluk:
     pdf.set_font(
         "Helvetica",
         "B",
-        14
+        12
     )
 
     pdf.cell(
@@ -713,7 +579,7 @@ if not gozluk:
     pdf.set_font(
         "Helvetica",
         "",
-        11
+        10
     )
 
     pdf.cell(
@@ -724,7 +590,7 @@ if not gozluk:
     )
 
     # =====================================================
-    # SAVE PDF
+    # SAVE
     # =====================================================
 
     filename = "COSHH_PRO_REPORT.pdf"
