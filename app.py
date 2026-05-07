@@ -62,7 +62,7 @@ df = pd.read_excel(
 df.columns = df.columns.astype(str)
 
 # =====================================================
-# KİMYASAL
+# CHEMICAL
 # =====================================================
 
 kimyasallar = df["Kimyasal Adı"].dropna().unique()
@@ -125,7 +125,7 @@ else:
     miktar_band = "Large"
 
 # =====================================================
-# MARUZİYET
+# EXPOSURE
 # =====================================================
 
 maruziyet = st.selectbox(
@@ -147,7 +147,7 @@ ucuculuk = st.selectbox(
 )
 
 # =====================================================
-# ÇALIŞMA ORTAMI
+# WORK ENVIRONMENT
 # =====================================================
 
 st.subheader("Çalışma Ortamı")
@@ -159,7 +159,7 @@ yetersiz_hijyen = st.checkbox("Yetersiz Hijyen")
 dar_alan = st.checkbox("Dar Alan")
 
 # =====================================================
-# PERSONEL
+# PERSONNEL
 # =====================================================
 
 st.subheader("Personel Bilgileri")
@@ -169,7 +169,7 @@ departman = st.text_input("Departman")
 degerlendiren = st.text_input("Değerlendiren")
 
 # =====================================================
-# HAVALANDIRMA
+# VENTILATION
 # =====================================================
 
 st.subheader("Havalandırma")
@@ -334,7 +334,7 @@ if st.button("COSHH Değerlendir"):
         risk += 2
 
     # =====================================================
-    # PPE EFFECT
+    # CONTROL EFFECT
     # =====================================================
 
     if not lokal:
@@ -427,30 +427,18 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     ghs = []
-     
+
     if "H314" in hkod:
         ghs.append("GHS05")
-   
+
     if "H315" in hkod or "H319" in hkod:
         ghs.append("GHS07")
-   
+
     if "H330" in hkod:
         ghs.append("GHS06")
-   
+
     if "H340" in hkod or "H350" in hkod:
         ghs.append("GHS08")
-
-    if "H350" in hkod or "H340" in hkod:
-        ghs.append("GHS08")
-
-    if "H314" in hkod:
-        ghs.append("GHS05")
-
-    if "H315" in hkod or "H319" in hkod:
-        ghs.append("GHS07")
-
-    if "H330" in hkod:
-        ghs.append("GHS06")
 
     # =====================================================
     # RESULT SCREEN
@@ -475,7 +463,7 @@ if st.button("COSHH Değerlendir"):
     st.write(kontrol)
 
     # =====================================================
-    # GHS ICONS
+    # GHS ICONS SCREEN
     # =====================================================
 
     st.subheader("GHS Pictograms")
@@ -484,28 +472,28 @@ if st.button("COSHH Değerlendir"):
 
         st.write("•", g)
 
-        if "GHS05" in g:
+        if g == "GHS05":
 
             st.image(
                 "ghs05.png",
                 width=120
             )
 
-        if "GHS06" in g:
+        if g == "GHS06":
 
             st.image(
                 "ghs06.png",
                 width=120
             )
 
-        if "GHS07" in g:
+        if g == "GHS07":
 
             st.image(
                 "ghs07.png",
                 width=120
             )
 
-        if "GHS08" in g:
+        if g == "GHS08":
 
             st.image(
                 "ghs08.png",
@@ -533,7 +521,7 @@ if st.button("COSHH Değerlendir"):
 
     pdf.cell(
         190,
-        10,
+        12,
         "COSHH PROFESSIONAL REPORT",
         ln=True,
         align="C"
@@ -591,6 +579,69 @@ if st.button("COSHH Değerlendir"):
 
     pdf.ln(10)
 
+    # =====================================================
+    # PDF GHS
+    # =====================================================
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "GHS Pictograms",
+        ln=True
+    )
+
+    for g in ghs:
+
+        if g == "GHS05":
+
+            pdf.image(
+                "ghs05.png",
+                x=20,
+                w=20
+            )
+
+            pdf.ln(22)
+
+        if g == "GHS06":
+
+            pdf.image(
+                "ghs06.png",
+                x=20,
+                w=20
+            )
+
+            pdf.ln(22)
+
+        if g == "GHS07":
+
+            pdf.image(
+                "ghs07.png",
+                x=20,
+                w=20
+            )
+
+            pdf.ln(22)
+
+        if g == "GHS08":
+
+            pdf.image(
+                "ghs08.png",
+                x=20,
+                w=20
+            )
+
+            pdf.ln(22)
+
+    # =====================================================
+    # DATE
+    # =====================================================
+
     pdf.set_font(
         "Helvetica",
         "B",
@@ -616,6 +667,10 @@ if st.button("COSHH Değerlendir"):
         str(datetime.now()),
         ln=True
     )
+
+    # =====================================================
+    # SAVE PDF
+    # =====================================================
 
     filename = "COSHH_PRO_REPORT.pdf"
 
