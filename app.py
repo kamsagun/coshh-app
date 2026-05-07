@@ -361,7 +361,24 @@ if st.button("COSHH Değerlendir"):
     # -----------------------------------
 
     oneriler = []
+    # -----------------------------------
+    # Gelişmiş COSHH önerileri
+    # -----------------------------------
 
+    if hazard_group == "E":
+        oneriler.append("Kanserojen proseduru uygulanmali")
+
+    if kontrol == "Control Approach 4":
+        oneriler.append("Containment sistemi gerekli")
+
+    if banding == "Yuksek":
+        oneriler.append("Local exhaust ventilation gerekli")
+
+    if maruziyet == "Yuksek":
+        oneriler.append("Maruziyet suresi azaltılmali")
+
+    if fiziksel.lower() == "sivi":
+        oneriler.append("Sicrama riskine dikkat edilmeli")
     if not lokal:
         oneriler.append("Lokal havalandirma onerilir")
 
