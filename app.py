@@ -213,8 +213,6 @@ if st.button("COSHH Değerlendir"):
 
     hazard_group = "A"
 
-    # Çok yüksek toksisite
-
     if (
         "H350" in hkod or
         "H340" in hkod
@@ -222,23 +220,17 @@ if st.button("COSHH Değerlendir"):
 
         hazard_group = "E"
 
-    # Akut toksik
-
     elif (
         "H330" in hkod
     ):
 
         hazard_group = "D"
 
-    # Korozif
-
     elif (
         "H314" in hkod
     ):
 
         hazard_group = "C"
-
-    # Kronik etki
 
     elif (
         "H373" in hkod
@@ -329,8 +321,6 @@ if st.button("COSHH Değerlendir"):
 
     ppe_uyari = []
 
-    # Korozif
-
     if "H314" in hkod:
 
         if not gozluk:
@@ -345,8 +335,6 @@ if st.button("COSHH Değerlendir"):
                 "H314 icin yuz siperi gerekli"
             )
 
-    # Akut toksik
-
     if "H330" in hkod:
 
         if not resp:
@@ -355,8 +343,6 @@ if st.button("COSHH Değerlendir"):
                 "H330 icin respirator zorunlu"
             )
 
-    # Kronik toksisite
-
     if "H373" in hkod:
 
         if not eldiven:
@@ -364,162 +350,7 @@ if st.button("COSHH Değerlendir"):
             ppe_uyari.append(
                 "H373 icin kimyasal eldiven onerilir"
             )
-    # =====================================================
-    # EXPOSURE ROUTES
-    # =====================================================
 
-    maruziyet_yollari = []
-
-    # Gaz / buhar
-
-    if (
-        "H330" in hkod or
-        "gaz" in fiziksel.lower() or
-        "buhar" in fiziksel.lower()
-    ):
-
-        maruziyet_yollari.append(
-            "Inhalasyon Riski"
-        )
-
-    # Korozif / irritan
-
-    if (
-        "H314" in hkod or
-        "H315" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Deri Temasi Riski"
-        )
-
-    # Göz hasarı
-
-    if (
-        "H318" in hkod or
-        "H319" in hkod or
-        "H314" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Goz Temasi Riski"
-        )
-
-    # Oral toksisite
-
-    if (
-        "H300" in hkod or
-        "H301" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Yutma Riski"
-        )
-    # =====================================================
-    # FIRST AID
-    # =====================================================
-
-    ilk_yardim = []
-
-    # Inhalasyon
-
-    if "Inhalasyon Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kisiyi temiz havaya cikar"
-        )
-
-        ilk_yardim.append(
-            "Solunum sikintisinda tibbi yardim al"
-        )
-
-    # Deri
-
-    if "Deri Temasi Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kontamine kiyafetleri cikar"
-        )
-
-        ilk_yardim.append(
-            "Bol su ile yika"
-        )
-
-    # Goz
-
-    if "Goz Temasi Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Gozleri en az 15 dakika yika"
-        )
-
-        ilk_yardim.append(
-            "Kontakt lensleri cikar"
-        )
-
-    # Yutma
-
-    if "Yutma Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kusturmaya calisma"
-        )
-
-        ilk_yardim.append(
-            "Derhal tibbi yardim al"
-        )
-    # =====================================================
-    # EMERGENCY MEASURES
-    # =====================================================
-
-    acil_durum = []
-
-    # Korozif
-
-    if "H314" in hkod:
-
-        acil_durum.append(
-            "Goz temasinda bol su ile yika"
-        )
-
-        acil_durum.append(
-            "Acil goz yikama istasyonu gerekli"
-        )
-
-    # Akut toksik
-
-    if "H330" in hkod:
-
-        acil_durum.append(
-            "Temiz havaya cikar"
-        )
-
-        acil_durum.append(
-            "Acil tibbi mudahale gerekli"
-        )
-
-    # Yanici
-
-    if (
-        "H225" in hkod or
-        "H226" in hkod
-    ):
-
-        acil_durum.append(
-            "Tutusma kaynaklarindan uzak tut"
-        )
-
-        acil_durum.append(
-            "Yangin sondurucu hazir bulundur"
-        )
-
-    # Kronik toksisite
-
-    if "H373" in hkod:
-
-        acil_durum.append(
-            "Uzun sureli maruziyet izlenmeli"
-        )
     # =====================================================
     # RECOMMENDATIONS
     # =====================================================
@@ -569,6 +400,141 @@ if st.button("COSHH Değerlendir"):
         )
 
     # =====================================================
+    # EXPOSURE ROUTES
+    # =====================================================
+
+    maruziyet_yollari = []
+
+    if (
+        "H330" in hkod or
+        "gaz" in fiziksel.lower() or
+        "buhar" in fiziksel.lower()
+    ):
+
+        maruziyet_yollari.append(
+            "Inhalasyon Riski"
+        )
+
+    if (
+        "H314" in hkod or
+        "H315" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Deri Temasi Riski"
+        )
+
+    if (
+        "H318" in hkod or
+        "H319" in hkod or
+        "H314" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Goz Temasi Riski"
+        )
+
+    if (
+        "H300" in hkod or
+        "H301" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Yutma Riski"
+        )
+
+    # =====================================================
+    # FIRST AID
+    # =====================================================
+
+    ilk_yardim = []
+
+    if "Inhalasyon Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kisiyi temiz havaya cikar"
+        )
+
+        ilk_yardim.append(
+            "Solunum sikintisinda tibbi yardim al"
+        )
+
+    if "Deri Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kontamine kiyafetleri cikar"
+        )
+
+        ilk_yardim.append(
+            "Bol su ile yika"
+        )
+
+    if "Goz Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Gozleri en az 15 dakika yika"
+        )
+
+        ilk_yardim.append(
+            "Kontakt lensleri cikar"
+        )
+
+    if "Yutma Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kusturmaya calisma"
+        )
+
+        ilk_yardim.append(
+            "Derhal tibbi yardim al"
+        )
+
+    # =====================================================
+    # EMERGENCY MEASURES
+    # =====================================================
+
+    acil_durum = []
+
+    if "H314" in hkod:
+
+        acil_durum.append(
+            "Goz temasinda bol su ile yika"
+        )
+
+        acil_durum.append(
+            "Acil goz yikama istasyonu gerekli"
+        )
+
+    if "H330" in hkod:
+
+        acil_durum.append(
+            "Temiz havaya cikar"
+        )
+
+        acil_durum.append(
+            "Acil tibbi mudahale gerekli"
+        )
+
+    if (
+        "H225" in hkod or
+        "H226" in hkod
+    ):
+
+        acil_durum.append(
+            "Tutusma kaynaklarindan uzak tut"
+        )
+
+        acil_durum.append(
+            "Yangin sondurucu hazir bulundur"
+        )
+
+    if "H373" in hkod:
+
+        acil_durum.append(
+            "Uzun sureli maruziyet izlenmeli"
+        )
+
+    # =====================================================
     # RESULT SCREEN
     # =====================================================
 
@@ -606,11 +572,7 @@ if st.button("COSHH Değerlendir"):
     st.write(kontrol)
 
     # =====================================================
-    # RECOMMENDATIONS SCREEN
-    # =====================================================
-
-    # =====================================================
-    # PPE WARNINGS SCREEN
+    # PPE WARNINGS
     # =====================================================
 
     if len(ppe_uyari) > 0:
@@ -620,18 +582,17 @@ if st.button("COSHH Değerlendir"):
         for u in ppe_uyari:
 
             st.error(u)
+
+    # =====================================================
+    # RECOMMENDATIONS SCREEN
+    # =====================================================
+
     st.subheader("Öneriler")
 
     for o in oneriler:
 
         st.write("•", o)
 
-    # =====================================================
-    # GHS SCREEN
-    # =====================================================
-    # =====================================================
-    # EMERGENCY SCREEN
-    # =====================================================
     # =====================================================
     # EXPOSURE ROUTES SCREEN
     # =====================================================
@@ -641,6 +602,7 @@ if st.button("COSHH Değerlendir"):
     for m in maruziyet_yollari:
 
         st.info(m)
+
     # =====================================================
     # FIRST AID SCREEN
     # =====================================================
@@ -650,11 +612,21 @@ if st.button("COSHH Değerlendir"):
     for i in ilk_yardim:
 
         st.success(i)
+
+    # =====================================================
+    # EMERGENCY SCREEN
+    # =====================================================
+
     st.subheader("Acil Durum Önlemleri")
 
     for a in acil_durum:
 
         st.warning(a)
+
+    # =====================================================
+    # GHS SCREEN
+    # =====================================================
+
     st.subheader("GHS Pictograms")
 
     for g in ghs:
@@ -665,28 +637,28 @@ if st.button("COSHH Değerlendir"):
 
             st.image(
                 "ghs05.png",
-                width=120
+                width=100
             )
 
         if g == "GHS06":
 
             st.image(
                 "ghs06.png",
-                width=120
+                width=100
             )
 
         if g == "GHS07":
 
             st.image(
                 "ghs07.png",
-                width=120
+                width=100
             )
 
         if g == "GHS08":
 
             st.image(
                 "ghs08.png",
-                width=120
+                width=100
             )
 
     # =====================================================
@@ -832,7 +804,7 @@ if st.button("COSHH Değerlendir"):
     # PDF GHS
     # =====================================================
 
-    pdf.ln(10)
+    pdf.ln(8)
 
     pdf.set_font(
         "Helvetica",
@@ -847,47 +819,51 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
+    x_pos = 20
+
     for g in ghs:
 
         if g == "GHS05":
 
             pdf.image(
                 "ghs05.png",
-                x=20,
-                w=20
+                x=x_pos,
+                w=18
             )
 
-            pdf.ln(22)
+            x_pos += 25
 
         if g == "GHS06":
 
             pdf.image(
                 "ghs06.png",
-                x=20,
-                w=20
+                x=x_pos,
+                w=18
             )
 
-            pdf.ln(22)
+            x_pos += 25
 
         if g == "GHS07":
 
             pdf.image(
                 "ghs07.png",
-                x=20,
-                w=20
+                x=x_pos,
+                w=18
             )
 
-            pdf.ln(22)
+            x_pos += 25
 
         if g == "GHS08":
 
             pdf.image(
                 "ghs08.png",
-                x=20,
-                w=20
+                x=x_pos,
+                w=18
             )
 
-            pdf.ln(22)
+            x_pos += 25
+
+    pdf.ln(25)
 
     # =====================================================
     # DATE
