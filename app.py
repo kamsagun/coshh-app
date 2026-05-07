@@ -365,6 +365,58 @@ if st.button("COSHH Değerlendir"):
                 "H373 icin kimyasal eldiven onerilir"
             )
     # =====================================================
+    # EMERGENCY MEASURES
+    # =====================================================
+
+    acil_durum = []
+
+    # Korozif
+
+    if "H314" in hkod:
+
+        acil_durum.append(
+            "Goz temasinda bol su ile yika"
+        )
+
+        acil_durum.append(
+            "Acil goz yikama istasyonu gerekli"
+        )
+
+    # Akut toksik
+
+    if "H330" in hkod:
+
+        acil_durum.append(
+            "Temiz havaya cikar"
+        )
+
+        acil_durum.append(
+            "Acil tibbi mudahale gerekli"
+        )
+
+    # Yanici
+
+    if (
+        "H225" in hkod or
+        "H226" in hkod
+    ):
+
+        acil_durum.append(
+            "Tutusma kaynaklarindan uzak tut"
+        )
+
+        acil_durum.append(
+            "Yangin sondurucu hazir bulundur"
+        )
+
+    # Kronik toksisite
+
+    if "H373" in hkod:
+
+        acil_durum.append(
+            "Uzun sureli maruziyet izlenmeli"
+        )
+    # =====================================================
     # RECOMMENDATIONS
     # =====================================================
 
@@ -473,7 +525,15 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
     # GHS SCREEN
     # =====================================================
+    # =====================================================
+    # EMERGENCY SCREEN
+    # =====================================================
 
+    st.subheader("Acil Durum Önlemleri")
+
+    for a in acil_durum:
+
+        st.warning(a)
     st.subheader("GHS Pictograms")
 
     for g in ghs:
