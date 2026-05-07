@@ -363,7 +363,23 @@ if st.button("COSHH Değerlendir"):
     st.subheader(kontrol)
 
     st.write("Hazard Group:", hazard_group)
+    # =====================================================
+    # OTOMATIK PPE GEREKSINIMI
+    # =====================================================
 
+    gerekli_ppe = []
+
+    if "gaz" in fiziksel_lower:
+        gerekli_ppe.append("Respirator")
+
+    if "H314" in hkod:
+        gerekli_ppe.append("Kimyasal Eldiven")
+
+    if islem == "Püskürtme":
+        gerekli_ppe.append("Koruyucu Gozluk")
+
+    if hazard_group in ["D", "E"]:
+        gerekli_ppe.append("Yuz Siperi")
     # =====================================================
     # ÖNERİLER
     # =====================================================
@@ -393,7 +409,11 @@ if st.button("COSHH Değerlendir"):
 
     if fiziksel_lower == "gaz":
         oneriler.append("Gaz monitorizasyonu onerilir")
+    st.subheader("Gerekli PPE")
 
+    for g in gerekli_ppe:
+
+        st.write("•", g)
     st.subheader("Oneriler")
 
     for o in oneriler:
