@@ -350,6 +350,9 @@ rapor_no = (
     else:
 
         st.error(sonuc)
+    st.subheader("Rapor No")
+
+    st.code(rapor_no)
 
     st.subheader("Hazard Group")
     st.write(hazard_group)
@@ -436,6 +439,7 @@ rapor_no = (
 
     bilgiler = [
 
+        ("Report No", rapor_no),
         ("Chemical", temizle(secili)),
         ("CAS No", temizle(cas)),
         ("H Codes", temizle(hkod)),
