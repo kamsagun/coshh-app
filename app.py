@@ -414,6 +414,47 @@ if st.button("COSHH Değerlendir"):
     for g in gerekli_ppe:
 
         st.write("•", g)
+        # =====================================================
+    # CONTROL MEASURES
+    # =====================================================
+
+    kontrol_onlemleri = []
+
+    if kontrol == "Control Approach 4":
+
+        kontrol_onlemleri.append(
+            "Containment sistemi kullanilmali"
+        )
+
+    if kontrol == "Control Approach 3":
+
+        kontrol_onlemleri.append(
+            "Local Exhaust Ventilation gerekli"
+        )
+
+    if hazard_group in ["D", "E"]:
+
+        kontrol_onlemleri.append(
+            "Yetkili personel ile calisilmalı"
+        )
+
+    if fiziksel_lower == "gaz":
+
+        kontrol_onlemleri.append(
+            "Gaz detector sistemi onerilir"
+        )
+
+    if islem == "Püskürtme":
+
+        kontrol_onlemleri.append(
+            "Kapali sistem uygulamasi onerilir"
+        )
+
+    st.subheader("Control Measures")
+
+    for k in kontrol_onlemleri:
+
+        st.write("•", k)
     st.subheader("Oneriler")
 
     for o in oneriler:
