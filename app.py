@@ -296,23 +296,26 @@ elif ucuculuk == "Orta":
 elif hazard_group == "D":
 
     if ucuculuk == "Yüksek":
+
         kontrol = "Control Approach 4"
 
     else:
+
         kontrol = "Control Approach 3"
 
 elif hazard_group == "C":
 
     if miktar >= 100:
+
         kontrol = "Control Approach 3"
 
     else:
+
         kontrol = "Control Approach 2"
 
 else:
 
     kontrol = "Control Approach 1"
-
     # GEREKLİ PPE
 
     gerekli_ppe = []
