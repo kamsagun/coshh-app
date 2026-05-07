@@ -253,7 +253,17 @@ if st.button("COSHH Değerlendir"):
     # EKRAN
     # =========================================
 
-    st.header(sonuc)
+    if sonuc == "DUSUK RISK":
+
+    st.success(sonuc)
+
+elif sonuc == "ORTA RISK":
+
+    st.warning(sonuc)
+
+else:
+
+    st.error(sonuc)
 
     st.subheader(kontrol)
 
