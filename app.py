@@ -12,21 +12,27 @@ def temizle(text):
     text = str(text)
 
     degisim = {
-        "İ":"I","ı":"i",
-        "Ş":"S","ş":"s",
-        "Ğ":"G","ğ":"g",
-        "Ü":"U","ü":"u",
-        "Ö":"O","ö":"o",
-        "Ç":"C","ç":"c"
+        "İ":"I",
+        "ı":"i",
+        "Ş":"S",
+        "ş":"s",
+        "Ğ":"G",
+        "ğ":"g",
+        "Ü":"U",
+        "ü":"u",
+        "Ö":"O",
+        "ö":"o",
+        "Ç":"C",
+        "ç":"c"
     }
 
-    for k,v in degisim.items():
-        text = text.replace(k,v)
+    for k, v in degisim.items():
+        text = text.replace(k, v)
 
     return text
 
 # -----------------------------------
-# Sayfa Ayarı
+# Sayfa
 # -----------------------------------
 
 st.set_page_config(
@@ -34,8 +40,10 @@ st.set_page_config(
     layout="wide"
 )
 
+st.title("COSHH Risk Sistemi")
+
 # -----------------------------------
-# Excel Oku
+# Excel oku
 # -----------------------------------
 
 FILE = "020526 COSHH MAKRO.xlsm"
@@ -45,13 +53,7 @@ df = pd.read_excel(FILE, sheet_name="DB")
 df.columns = df.columns.astype(str)
 
 # -----------------------------------
-# Başlık
-# -----------------------------------
-
-st.title("COSHH Risk Sistemi")
-
-# -----------------------------------
-# Kimyasal Seç
+# Kimyasal seç
 # -----------------------------------
 
 kimyasallar = df["Kimyasal Adı"].dropna().unique()
@@ -63,45 +65,44 @@ secili = st.selectbox(
 
 satir = df[df["Kimyasal Adı"] == secili].iloc[0]
 
-cas = str(satir.get("CAS No","-"))
-hkod = str(satir.get("H Kodları","-"))
-fiziksel = str(satir.get("Fiziksel Hal","-"))
+cas = str(satir.get("CAS No", "-"))
+hkod = str(satir.get("H Kodları", "-"))
+fiziksel = str(satir.get("Fiziksel Hal", "-"))
 
-# -----------------------------------
-# Kimyasal Bilgileri
-# -----------------------------------
-
-st.subheader("Kimyasal Bilgileri")
-
-st.write("CAS No:", cas)
+st.write("CAS:", cas)
 st.write("H Kodları:", hkod)
 st.write("Fiziksel Hal:", fiziksel)
 
 st.divider()
 
 # -----------------------------------
-# İş Bilgileri
+# İşlem
 # -----------------------------------
 
-st.subheader("İş Bilgileri")
-
 islem = st.selectbox(
-    "İşlem Türü",
+    "İşlem",
     [
         "Karıştırma",
         "Transfer",
         "Püskürtme",
-        "Isıtma",
-        "Temizlik"
+        "Isıtma"
     ]
 )
 
+# -----------------------------------
+# Süre
+# -----------------------------------
+
 sure = st.slider(
-    "Maruziyet Süresi (Saat)",
+    "Süre (Saat)",
     0,
-    12,
+    8,
     1
 )
+
+# -----------------------------------
+# Miktar
+# -----------------------------------
 
 miktar = st.number_input(
     "Kullanım Miktarı (kg/L)",
@@ -109,8 +110,12 @@ miktar = st.number_input(
     value=1.0
 )
 
+# -----------------------------------
+# Maruziyet
+# -----------------------------------
+
 maruziyet = st.selectbox(
-    "Maruziyet Seviyesi",
+    "Maruziyet",
     [
         "Dusuk",
         "Orta",
@@ -118,17 +123,33 @@ maruziyet = st.selectbox(
     ]
 )
 
-st.divider()
-
 # -----------------------------------
-# Personel Bilgileri
+# Banding
 # -----------------------------------
 
-st.subheader("Personel Bilgileri")
+banding = "Dusuk"
 
-calisan = st.text_input("Çalışan")
-departman = st.text_input("Departman")
-degerlendiren = st.text_input("Değerlendiren")
+if "Sivi" in fiziksel or "sivi" in fiziksel:
+
+    banding = st.selectbox(
+        "Uçuculuk",
+        [
+            "Dusuk",
+            "Orta",
+            "Yuksek"
+        ]
+    )
+
+else:
+
+    banding = st.selectbox(
+        "Tozluluk",
+        [
+            "Dusuk",
+            "Orta",
+            "Yuksek"
+        ]
+    )
 
 st.divider()
 
@@ -138,9 +159,11 @@ st.divider()
 
 st.subheader("Havalandırma")
 
-havalandirma = st.checkbox(
-    "Lokal Havalandırma Var"
-)
+lokal = st.checkbox("Lokal Havalandırma")
+
+genel = st.checkbox("Genel Havalandırma")
+
+st.divider()
 
 # -----------------------------------
 # PPE
@@ -149,40 +172,40 @@ havalandirma = st.checkbox(
 st.subheader("PPE")
 
 resp = st.checkbox("Respiratör")
+
 eldiven = st.checkbox("Kimyasal Eldiven")
+
 gozluk = st.checkbox("Koruyucu Gözlük")
+
 yuzsiperi = st.checkbox("Yüz Siperi")
+
 koruyucu = st.checkbox("Koruyucu Kıyafet")
 
+st.divider()
+
 # -----------------------------------
-# COSHH Hesaplama
+# Personel bilgileri
+# -----------------------------------
+
+calisan = st.text_input("Çalışan Adı")
+
+departman = st.text_input("Departman")
+
+degerlendiren = st.text_input("Değerlendiren")
+
+st.divider()
+
+# -----------------------------------
+# Değerlendirme
 # -----------------------------------
 
 if st.button("COSHH Değerlendir"):
 
-    # -----------------------------------
-    # Hazard Group
-    # -----------------------------------
-
-    hazard_group = "A"
-
-    if "H350" in hkod or "H340" in hkod:
-        hazard_group = "E"
-
-    elif "H330" in hkod or "H310" in hkod:
-        hazard_group = "D"
-
-    elif "H315" in hkod or "H319" in hkod:
-        hazard_group = "B"
-
-    elif "H335" in hkod or "H336" in hkod:
-        hazard_group = "C"
-
-    # -----------------------------------
-    # Risk Hesabı
-    # -----------------------------------
-
     risk = 0
+
+    # -----------------------------------
+    # H kodları
+    # -----------------------------------
 
     if "H350" in hkod:
         risk += 5
@@ -193,19 +216,40 @@ if st.button("COSHH Değerlendir"):
     if "H330" in hkod:
         risk += 4
 
-    if islem == "Püskürtme":
-        risk += 3
-
-    if sure >= 8:
+    if "H310" in hkod:
         risk += 4
 
-    elif sure >= 4:
+    if "H314" in hkod:
         risk += 2
 
-    if miktar >= 100:
+    # -----------------------------------
+    # İşlem
+    # -----------------------------------
+
+    if islem == "Püskürtme":
         risk += 4
 
-    elif miktar >= 50:
+    elif islem == "Isıtma":
+        risk += 3
+
+    elif islem == "Transfer":
+        risk += 2
+
+    # -----------------------------------
+    # Süre
+    # -----------------------------------
+
+    if sure >= 4:
+        risk += 3
+
+    elif sure >= 2:
+        risk += 2
+
+    # -----------------------------------
+    # Miktar
+    # -----------------------------------
+
+    if miktar >= 50:
         risk += 3
 
     elif miktar >= 10:
@@ -214,14 +258,39 @@ if st.button("COSHH Değerlendir"):
     elif miktar >= 1:
         risk += 1
 
+    # -----------------------------------
+    # Maruziyet
+    # -----------------------------------
+
     if maruziyet == "Yuksek":
         risk += 4
 
     elif maruziyet == "Orta":
         risk += 2
 
-    if not havalandirma:
-        risk += 3
+    # -----------------------------------
+    # Banding
+    # -----------------------------------
+
+    if banding == "Yuksek":
+        risk += 4
+
+    elif banding == "Orta":
+        risk += 2
+
+    # -----------------------------------
+    # Havalandırma
+    # -----------------------------------
+
+    if not lokal:
+        risk += 2
+
+    if not genel:
+        risk += 1
+
+    # -----------------------------------
+    # PPE
+    # -----------------------------------
 
     if not resp:
         risk += 2
@@ -232,11 +301,8 @@ if st.button("COSHH Değerlendir"):
     if not gozluk:
         risk += 1
 
-    if not koruyucu:
-        risk += 1
-
     # -----------------------------------
-    # Risk Sonucu
+    # Sonuç
     # -----------------------------------
 
     if risk <= 5:
@@ -249,29 +315,46 @@ if st.button("COSHH Değerlendir"):
         sonuc = "YUKSEK RISK"
 
     # -----------------------------------
+    # Hazard Group
+    # -----------------------------------
+
+    hazard_group = "A"
+
+    if "H315" in hkod or "H319" in hkod:
+        hazard_group = "B"
+
+    if "H331" in hkod or "H311" in hkod:
+        hazard_group = "C"
+
+    if "H350" in hkod or "H340" in hkod:
+        hazard_group = "E"
+
+    # -----------------------------------
     # Control Approach
     # -----------------------------------
 
-    kontrol = "1"
+    kontrol = "Control Approach 1"
 
-    if risk >= 15:
-        kontrol = "4"
+    if hazard_group == "B":
+        kontrol = "Control Approach 2"
 
-    elif risk >= 10:
-        kontrol = "3"
+    elif hazard_group == "C":
+        kontrol = "Control Approach 3"
 
-    elif risk >= 5:
-        kontrol = "2"
+    elif hazard_group == "E":
+        kontrol = "Control Approach 4"
 
     # -----------------------------------
-    # Sonuç Göster
+    # Ekran Sonuç
     # -----------------------------------
 
     st.header(sonuc)
 
-    st.subheader(f"CONTROL APPROACH {kontrol}")
-
     st.write(f"Hazard Group: {hazard_group}")
+
+    st.write(f"Control Approach: {kontrol}")
+
+    st.write(f"Banding: {banding}")
 
     # -----------------------------------
     # Öneriler
@@ -279,17 +362,11 @@ if st.button("COSHH Değerlendir"):
 
     oneriler = []
 
-    if not havalandirma:
+    if not lokal:
         oneriler.append("Lokal havalandirma onerilir")
 
-    if kontrol == "2":
-        oneriler.append("Genel havalandirma yeterli olabilir")
-
-    if kontrol == "3":
-        oneriler.append("Lokal emis sistemi gerekli")
-
-    if kontrol == "4":
-        oneriler.append("Containment gerekli")
+    if not genel:
+        oneriler.append("Genel havalandirma yeterli olmayabilir")
 
     if not resp:
         oneriler.append("Respirator onerilir")
@@ -305,8 +382,10 @@ if st.button("COSHH Değerlendir"):
     for o in oneriler:
         st.write("•", o)
 
+    st.divider()
+
     # -----------------------------------
-    # PDF Oluştur
+    # PDF
     # -----------------------------------
 
     pdf = FPDF()
@@ -319,9 +398,9 @@ if st.button("COSHH Değerlendir"):
 
     pdf.set_font("Helvetica", "B", 18)
 
-    pdf.cell(190, 12, "COSHH RISK REPORT", ln=True)
+    pdf.cell(190, 10, "COSHH RISK REPORT", ln=True)
 
-    pdf.ln(8)
+    pdf.ln(10)
 
     # Bilgiler
 
@@ -335,12 +414,13 @@ if st.button("COSHH Değerlendir"):
         ("Duration", f"{sure} hours"),
         ("Amount", str(miktar)),
         ("Exposure", temizle(maruziyet)),
+        ("Banding", temizle(banding)),
         ("Employee", temizle(calisan)),
         ("Department", temizle(departman)),
         ("Evaluator", temizle(degerlendiren)),
         ("Hazard Group", hazard_group),
-        ("Control Approach", kontrol),
-        ("Risk Result", temizle(sonuc))
+        ("Risk Result", temizle(sonuc)),
+        ("Control Approach", kontrol)
 
     ]
 
@@ -348,11 +428,11 @@ if st.button("COSHH Değerlendir"):
 
         pdf.set_font("Helvetica", "B", 12)
 
-        pdf.cell(55, 10, f"{label}:")
+        pdf.cell(60, 10, f"{label}:", 0, 0)
 
         pdf.set_font("Helvetica", "", 12)
 
-        pdf.cell(120, 10, str(value), ln=True)
+        pdf.multi_cell(120, 10, value)
 
     pdf.ln(5)
 
@@ -376,12 +456,7 @@ if st.button("COSHH Değerlendir"):
 
     for label, value in ppe_list:
 
-        pdf.cell(
-            190,
-            10,
-            f"{label}: {value}",
-            ln=True
-        )
+        pdf.cell(190, 10, f"{label}: {value}", ln=True)
 
     pdf.ln(5)
 
@@ -401,8 +476,6 @@ if st.button("COSHH Değerlendir"):
             f"- {temizle(o)}"
         )
 
-    # Tarih
-
     pdf.ln(10)
 
     pdf.set_font("Helvetica", "I", 10)
@@ -414,13 +487,17 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
+    # -----------------------------------
     # Kaydet
+    # -----------------------------------
 
     filename = "COSHH_REPORT.pdf"
 
     pdf.output(filename)
 
+    # -----------------------------------
     # İndir
+    # -----------------------------------
 
     with open(filename, "rb") as f:
 
