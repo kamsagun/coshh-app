@@ -330,19 +330,23 @@ if st.button("COSHH Değerlendir"):
 
     ]
 
-    for label, value in bilgiler:
+for label, value in bilgiler:
 
-        pdf.set_font("Helvetica", "B", 11)
+    pdf.set_x(20)
 
-        pdf.cell(45, 8, f"{label}:", 0, 0)
+    pdf.set_font("Helvetica", "B", 11)
 
-        pdf.set_font("Helvetica", "", 11)
+    pdf.cell(45, 8, f"{label}:", 0, 0)
 
-        pdf.multi_cell(
-            120,
-            8,
-            str(value)
-        )
+    pdf.set_font("Helvetica", "", 11)
+
+    pdf.cell(
+        100,
+        8,
+        str(value),
+        0,
+        1
+    )
 
     pdf.ln(5)
 
