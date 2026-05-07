@@ -6,7 +6,7 @@ import streamlit as st
 import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
-
+import random
 # =====================================================
 # TURKCE KARAKTER
 # =====================================================
@@ -142,7 +142,12 @@ st.write("Fiziksel Hal:", fiziksel)
 # =====================================================
 
 if st.button("COSHH Değerlendir"):
-
+rapor_no = (
+    "COSHH-" +
+    str(datetime.now().year) +
+    "-" +
+    str(random.randint(10000,99999))
+    )
     # =====================================================
     # RISK
     # =====================================================
