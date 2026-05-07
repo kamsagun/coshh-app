@@ -213,6 +213,8 @@ if st.button("COSHH Değerlendir"):
 
     hazard_group = "A"
 
+    # Çok yüksek toksisite
+
     if (
         "H350" in hkod or
         "H340" in hkod
@@ -220,11 +222,15 @@ if st.button("COSHH Değerlendir"):
 
         hazard_group = "E"
 
+    # Akut toksik
+
     elif (
         "H330" in hkod
     ):
 
         hazard_group = "D"
+
+    # Korozif
 
     elif (
         "H314" in hkod
@@ -232,11 +238,41 @@ if st.button("COSHH Değerlendir"):
 
         hazard_group = "C"
 
+    # Kronik etki
+
     elif (
         "H373" in hkod
     ):
 
         hazard_group = "B"
+
+    # =====================================================
+    # COSHH ESSENTIALS MODIFIER
+    # =====================================================
+
+    if islem == "Püskürtme":
+
+        if hazard_group == "A":
+            hazard_group = "B"
+
+        elif hazard_group == "B":
+            hazard_group = "C"
+
+    if maruziyet == "Yüksek":
+
+        if hazard_group == "A":
+            hazard_group = "B"
+
+        elif hazard_group == "B":
+            hazard_group = "C"
+
+    if miktar >= 100:
+
+        if hazard_group == "A":
+            hazard_group = "B"
+
+        elif hazard_group == "B":
+            hazard_group = "C"
 
     # =====================================================
     # CONTROL APPROACH
@@ -268,7 +304,10 @@ if st.button("COSHH Değerlendir"):
 
         ghs.append("GHS05")
 
-    if "H315" in hkod or "H319" in hkod:
+    if (
+        "H315" in hkod or
+        "H319" in hkod
+    ):
 
         ghs.append("GHS07")
 
