@@ -533,7 +533,21 @@ if st.button("COSHH Değerlendir"):
         acil_durum.append(
             "Uzun sureli maruziyet izlenmeli"
         )
+    # =====================================================
+    # REPORT STATUS
+    # =====================================================
 
+    if sonuc == "DUSUK RISK":
+
+        rapor_durumu = "ACCEPTABLE"
+
+    elif sonuc == "ORTA RISK":
+
+        rapor_durumu = "REVIEW REQUIRED"
+
+    else:
+
+        rapor_durumu = "IMMEDIATE ACTION REQUIRED"
     # =====================================================
     # RESULT SCREEN
     # =====================================================
@@ -565,6 +579,20 @@ if st.button("COSHH Değerlendir"):
 
         st.error(sonuc)
 
+        st.subheader("Report Status")
+
+    if rapor_durumu == "ACCEPTABLE":
+
+        st.success(rapor_durumu)
+
+    elif rapor_durumu == "REVIEW REQUIRED":
+
+        st.warning(rapor_durumu)
+
+    else:
+
+        st.error(rapor_durumu)
+        
     st.subheader("Hazard Group")
     st.write(hazard_group)
 
@@ -703,6 +731,7 @@ if st.button("COSHH Değerlendir"):
         ("Exposure", temizle(maruziyet)),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
+        ("Report Status", rapor_durumu),
         ("Risk Score", risk),
         ("Control Approach", kontrol)
 
