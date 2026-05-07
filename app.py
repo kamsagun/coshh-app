@@ -85,7 +85,8 @@ islem = st.selectbox(
         "Püskürtme",
         "Isıtma",
         "Dolum",
-        "Numune Alma"
+        "Numune Alma",
+        "Temizlik"
     ]
 )
 
@@ -149,6 +150,8 @@ st.subheader("Çalışma Ortamı")
 kapali_alan = st.checkbox("Kapalı Alan")
 sicak_islem = st.checkbox("Sıcak İşlem")
 vardiya = st.checkbox("Uzun Vardiya")
+yetersiz_hijyen = st.checkbox("Yetersiz Hijyen")
+dar_alan = st.checkbox("Dar Alan")
 
 # =====================================================
 # PERSONEL
@@ -214,6 +217,12 @@ if st.button("COSHH Değerlendir"):
     if "H330" in hkod:
         risk += 5
 
+    if "H334" in hkod:
+        risk += 5
+
+    if "H317" in hkod:
+        risk += 3
+
     if "H314" in hkod:
         risk += 4
 
@@ -228,12 +237,15 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     if islem == "Püskürtme":
-        risk += 4
+        risk += 5
 
     elif islem == "Isıtma":
-        risk += 3
+        risk += 4
 
     elif islem == "Dolum":
+        risk += 2
+
+    elif islem == "Temizlik":
         risk += 2
 
     # =====================================================
@@ -266,13 +278,13 @@ if st.button("COSHH Değerlendir"):
     fiziksel_lower = fiziksel.lower()
 
     if "gaz" in fiziksel_lower:
-        risk += 4
+        risk += 5
 
     elif "buhar" in fiziksel_lower:
-        risk += 3
+        risk += 4
 
     elif "toz" in fiziksel_lower:
-        risk += 3
+        risk += 4
 
     elif "sivi" in fiziksel_lower:
         risk += 1
@@ -310,6 +322,12 @@ if st.button("COSHH Değerlendir"):
     if vardiya:
         risk += 1
 
+    if yetersiz_hijyen:
+        risk += 2
+
+    if dar_alan:
+        risk += 2
+
     # =====================================================
     # PPE ETKİSİ
     # =====================================================
@@ -318,7 +336,7 @@ if st.button("COSHH Değerlendir"):
         risk += 2
 
     if not lev:
-        risk += 2
+        risk += 3
 
     if not resp:
         risk += 2
@@ -327,11 +345,11 @@ if st.button("COSHH Değerlendir"):
     # RİSK SONUCU
     # =====================================================
 
-    if risk <= 8:
+    if risk <= 10:
 
         sonuc = "DUSUK RISK"
 
-    elif risk <= 18:
+    elif risk <= 22:
 
         sonuc = "ORTA RISK"
 
@@ -358,7 +376,8 @@ if st.button("COSHH Değerlendir"):
     elif (
         "H301" in hkod or
         "H311" in hkod or
-        "H331" in hkod
+        "H331" in hkod or
+        "H334" in hkod
     ):
 
         hazard_group = "D"
@@ -372,7 +391,8 @@ if st.button("COSHH Değerlendir"):
 
     elif (
         "H315" in hkod or
-        "H319" in hkod
+        "H319" in hkod or
+        "H317" in hkod
     ):
 
         hazard_group = "B"
@@ -415,7 +435,15 @@ if st.button("COSHH Değerlendir"):
 
         gerekli_ppe.append("Respirator")
 
+    if "toz" in fiziksel_lower:
+
+        gerekli_ppe.append("Respirator")
+
     if "H314" in hkod:
+
+        gerekli_ppe.append("Kimyasal Eldiven")
+
+    if "H317" in hkod:
 
         gerekli_ppe.append("Kimyasal Eldiven")
 
@@ -482,6 +510,12 @@ if st.button("COSHH Değerlendir"):
             "Kapali alan proseduru uygulanmali"
         )
 
+    if dar_alan:
+
+        kontrol_onlemleri.append(
+            "Gaz olcum sistemi gerekli"
+        )
+
     if hazard_group in ["D", "E"]:
 
         kontrol_onlemleri.append(
@@ -492,6 +526,12 @@ if st.button("COSHH Değerlendir"):
 
         kontrol_onlemleri.append(
             "Gaz detector sistemi onerilir"
+        )
+
+    if yetersiz_hijyen:
+
+        kontrol_onlemleri.append(
+            "Hijyen prosedurleri iyilestirilmeli"
         )
 
     # =====================================================
@@ -507,6 +547,24 @@ if st.button("COSHH Değerlendir"):
     elif sonuc == "YUKSEK RISK":
 
         oel_durumu = "OEL/WEL Asim Riski"
+
+    # =====================================================
+    # GHS PİKTOGRAMLARI
+    # =====================================================
+
+    ghs = []
+
+    if "H350" in hkod or "H340" in hkod:
+        ghs.append("GHS08 - Health Hazard")
+
+    if "H314" in hkod:
+        ghs.append("GHS05 - Corrosion")
+
+    if "H315" in hkod or "H319" in hkod:
+        ghs.append("GHS07 - Irritant")
+
+    if "H330" in hkod:
+        ghs.append("GHS06 - Toxic")
 
     # =====================================================
     # EKRAN
@@ -532,6 +590,16 @@ if st.button("COSHH Değerlendir"):
 
     st.subheader("OEL / WEL Durumu")
     st.write(oel_durumu)
+
+    # =====================================================
+    # GHS
+    # =====================================================
+
+    st.subheader("GHS Pictograms")
+
+    for g in ghs:
+
+        st.write("•", g)
 
     # =====================================================
     # PPE
@@ -651,6 +719,40 @@ if st.button("COSHH Değerlendir"):
             str(value),
             0,
             1
+        )
+
+    pdf.ln(5)
+
+    # =====================================================
+    # GHS PDF
+    # =====================================================
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "GHS Pictograms",
+        ln=True
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
+
+    for g in ghs:
+
+        pdf.cell(
+            190,
+            8,
+            "- " + temizle(g),
+            ln=True
         )
 
     pdf.ln(5)
