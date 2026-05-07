@@ -69,14 +69,8 @@ cas = str(satir.get("CAS No", "-"))
 hkod = str(satir.get("H Kodları", "-"))
 fiziksel = str(satir.get("Fiziksel Hal", "-"))
 
-st.write("CAS:", cas)
-st.write("H Kodları:", hkod)
-st.write("Fiziksel Hal:", fiziksel)
-
-st.divider()
-
 # =====================================================
-# İŞLEM
+# FORM
 # =====================================================
 
 islem = st.selectbox(
@@ -101,6 +95,22 @@ miktar = st.number_input(
     min_value=0.0,
     value=1.0
 )
+
+# =====================================================
+# QUANTITY BAND
+# =====================================================
+
+if miktar < 1:
+
+    miktar_band = "Small"
+
+elif miktar < 100:
+
+    miktar_band = "Medium"
+
+else:
+
+    miktar_band = "Large"
 
 maruziyet = st.selectbox(
     "Maruziyet Seviyesi",
@@ -150,6 +160,17 @@ eldiven = st.checkbox("Kimyasal Eldiven")
 gozluk = st.checkbox("Koruyucu Gözlük")
 yuzsiperi = st.checkbox("Yüz Siperi")
 koruyucu = st.checkbox("Koruyucu Kıyafet")
+
+# =====================================================
+# BİLGİLER
+# =====================================================
+
+st.divider()
+
+st.write("CAS:", cas)
+st.write("H Kodları:", hkod)
+st.write("Fiziksel Hal:", fiziksel)
+st.write("Miktar Bandı:", miktar_band)
 
 # =====================================================
 # DEĞERLENDİR
@@ -327,19 +348,37 @@ if st.button("COSHH Değerlendir"):
 
             kontrol = "Control Approach 4"
 
+        elif miktar_band == "Large":
+
+            kontrol = "Control Approach 4"
+
         else:
 
             kontrol = "Control Approach 3"
 
     elif hazard_group == "C":
 
-        if miktar >= 100:
+        if miktar_band == "Large":
+
+            kontrol = "Control Approach 3"
+
+        elif ucuculuk == "Yüksek":
 
             kontrol = "Control Approach 3"
 
         else:
 
             kontrol = "Control Approach 2"
+
+    elif hazard_group == "B":
+
+        if ucuculuk == "Yüksek":
+
+            kontrol = "Control Approach 2"
+
+        else:
+
+            kontrol = "Control Approach 1"
 
     else:
 
@@ -370,26 +409,31 @@ if st.button("COSHH Değerlendir"):
     kontrol_onlemleri = []
 
     if kontrol == "Control Approach 4":
+
         kontrol_onlemleri.append(
             "Containment sistemi kullanilmali"
         )
 
     if kontrol == "Control Approach 3":
+
         kontrol_onlemleri.append(
             "Local Exhaust Ventilation gerekli"
         )
 
     if hazard_group in ["D", "E"]:
+
         kontrol_onlemleri.append(
             "Yetkili personel ile calisilmali"
         )
 
     if "gaz" in fiziksel_lower:
+
         kontrol_onlemleri.append(
             "Gaz detector sistemi onerilir"
         )
 
     if islem == "Püskürtme":
+
         kontrol_onlemleri.append(
             "Kapali sistem onerilir"
         )
@@ -401,32 +445,37 @@ if st.button("COSHH Değerlendir"):
     oneriler = []
 
     if not lokal:
+
         oneriler.append(
             "Lokal havalandirma onerilir"
         )
 
     if not genel:
+
         oneriler.append(
             "Genel havalandirma yeterli olmayabilir"
         )
 
     if not resp:
+
         oneriler.append(
             "Respirator onerilir"
         )
 
     if not eldiven:
+
         oneriler.append(
             "Kimyasal dayanimli eldiven onerilir"
         )
 
     if not gozluk:
+
         oneriler.append(
             "Koruyucu gozluk onerilir"
         )
 
     # =====================================================
-    # SONUÇ EKRANI
+    # EKRAN SONUÇ
     # =====================================================
 
     if sonuc == "DUSUK RISK":
@@ -450,11 +499,13 @@ if st.button("COSHH Değerlendir"):
     st.subheader("Control Measures")
 
     for k in kontrol_onlemleri:
+
         st.write("•", k)
 
     st.subheader("Recommendations")
 
     for o in oneriler:
+
         st.write("•", o)
 
     # =====================================================
@@ -465,13 +516,20 @@ if st.button("COSHH Değerlendir"):
 
     pdf.add_page()
 
-    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_auto_page_break(
+        auto=True,
+        margin=15
+    )
 
     # =====================================================
     # BAŞLIK
     # =====================================================
 
-    pdf.set_font("Helvetica", "B", 18)
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        18
+    )
 
     pdf.cell(
         190,
@@ -484,7 +542,7 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(10)
 
     # =====================================================
-    # BİLGİLER
+    # RAPOR BİLGİLERİ
     # =====================================================
 
     bilgiler = [
@@ -496,6 +554,7 @@ if st.button("COSHH Değerlendir"):
         ("Process", temizle(islem)),
         ("Duration", f"{sure} hours"),
         ("Amount", str(miktar)),
+        ("Quantity Band", miktar_band),
         ("Exposure", temizle(maruziyet)),
         ("Volatility", temizle(ucuculuk)),
         ("Employee", temizle(calisan)),
@@ -509,7 +568,11 @@ if st.button("COSHH Değerlendir"):
 
     for label, value in bilgiler:
 
-        pdf.set_font("Helvetica", "B", 11)
+        pdf.set_font(
+            "Helvetica",
+            "B",
+            11
+        )
 
         pdf.cell(
             60,
@@ -519,7 +582,11 @@ if st.button("COSHH Değerlendir"):
             0
         )
 
-        pdf.set_font("Helvetica", "", 11)
+        pdf.set_font(
+            "Helvetica",
+            "",
+            11
+        )
 
         pdf.cell(
             100,
@@ -535,7 +602,11 @@ if st.button("COSHH Değerlendir"):
     # PPE PDF
     # =====================================================
 
-    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
 
     pdf.cell(
         190,
@@ -544,7 +615,11 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
-    pdf.set_font("Helvetica", "", 11)
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
 
     ppe_list = [
 
@@ -571,7 +646,11 @@ if st.button("COSHH Değerlendir"):
     # CONTROL MEASURES PDF
     # =====================================================
 
-    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
 
     pdf.cell(
         190,
@@ -580,7 +659,11 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
-    pdf.set_font("Helvetica", "", 11)
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
 
     for k in kontrol_onlemleri:
 
@@ -594,10 +677,14 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
-    # RECOMMENDATIONS PDF
+    # ÖNERİLER PDF
     # =====================================================
 
-    pdf.set_font("Helvetica", "B", 14)
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
 
     pdf.cell(
         190,
@@ -606,7 +693,11 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
-    pdf.set_font("Helvetica", "", 11)
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
 
     for o in oneriler:
 
@@ -623,7 +714,11 @@ if st.button("COSHH Değerlendir"):
     # TARİH
     # =====================================================
 
-    pdf.set_font("Helvetica", "I", 9)
+    pdf.set_font(
+        "Helvetica",
+        "I",
+        9
+    )
 
     pdf.cell(
         190,
