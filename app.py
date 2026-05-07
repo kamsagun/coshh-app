@@ -324,6 +324,47 @@ if st.button("COSHH Değerlendir"):
         ghs.append("GHS08")
 
     # =====================================================
+    # PPE VALIDATION
+    # =====================================================
+
+    ppe_uyari = []
+
+    # Korozif
+
+    if "H314" in hkod:
+
+        if not gozluk:
+
+            ppe_uyari.append(
+                "H314 icin koruyucu gozluk gerekli"
+            )
+
+        if not yuzsiperi:
+
+            ppe_uyari.append(
+                "H314 icin yuz siperi gerekli"
+            )
+
+    # Akut toksik
+
+    if "H330" in hkod:
+
+        if not resp:
+
+            ppe_uyari.append(
+                "H330 icin respirator zorunlu"
+            )
+
+    # Kronik toksisite
+
+    if "H373" in hkod:
+
+        if not eldiven:
+
+            ppe_uyari.append(
+                "H373 icin kimyasal eldiven onerilir"
+            )
+    # =====================================================
     # RECOMMENDATIONS
     # =====================================================
 
@@ -412,6 +453,17 @@ if st.button("COSHH Değerlendir"):
     # RECOMMENDATIONS SCREEN
     # =====================================================
 
+    # =====================================================
+    # PPE WARNINGS SCREEN
+    # =====================================================
+
+    if len(ppe_uyari) > 0:
+
+        st.subheader("PPE Uyarıları")
+
+        for u in ppe_uyari:
+
+            st.error(u)
     st.subheader("Öneriler")
 
     for o in oneriler:
