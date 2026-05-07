@@ -441,6 +441,7 @@ if st.button("COSHH Değerlendir"):
         ("Exposure", temizle(maruziyet)),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
+        ("Risk Score", risk),
         ("Control Approach", kontrol)
 
     ]
@@ -475,6 +476,36 @@ if st.button("COSHH Değerlendir"):
             1
         )
 
+    # =====================================================
+    # PDF RISK BAR
+    # =====================================================
+
+    pdf.ln(5)
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        12
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "Risk Visualization",
+        ln=True
+    )
+
+    bar_width = min(risk * 5, 150)
+
+    pdf.rect(
+        20,
+        pdf.get_y(),
+        bar_width,
+        8,
+        "F"
+    )
+
+    pdf.ln(15)
     # =====================================================
     # PDF RECOMMENDATIONS
     # =====================================================
