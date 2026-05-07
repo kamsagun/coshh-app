@@ -331,6 +331,9 @@ if st.button("COSHH Değerlendir"):
         "Total Risk Score",
         risk
     )
+    st.progress(
+        min(risk / 30, 1.0)
+    )
     if sonuc == "DUSUK RISK":
 
         st.success(sonuc)
