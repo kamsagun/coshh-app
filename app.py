@@ -437,9 +437,12 @@ if st.button("COSHH Değerlendir"):
     if "H330" in hkod:
         ghs.append("GHS06")
 
-    if "H340" in hkod or "H350" in hkod:
+    if (
+        "H340" in hkod or
+        "H350" in hkod or
+        "H373" in hkod
+    ):
         ghs.append("GHS08")
-
     # =====================================================
     # RESULT SCREEN
     # =====================================================
