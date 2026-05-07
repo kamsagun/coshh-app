@@ -286,38 +286,31 @@ if st.button("COSHH Değerlendir"):
 
         st.error(sonuc)
 
-    st.subheader("Risk Matrix")
+        st.subheader("Risk Matrix")
 
-if sonuc == "DUSUK RISK":
+    if sonuc == "DUSUK RISK":
 
-    st.markdown(
-        """
-        🟩 Low Risk
-        
-        Kabul edilebilir risk seviyesi.
-        """
-    )
+        st.success("🟩 Low Risk")
 
-elif sonuc == "ORTA RISK":
+        st.write(
+            "Kabul edilebilir risk seviyesi."
+        )
 
-    st.markdown(
-        """
-        🟨 Medium Risk
-        
-        Kontrol önlemleri iyileştirilmelidir.
-        """
-    )
+    elif sonuc == "ORTA RISK":
 
-else:
+        st.warning("🟨 Medium Risk")
 
-    st.markdown(
-        """
-        🟥 High Risk
-        
-        Acil kontrol önlemleri gereklidir.
-        """
-    )
+        st.write(
+            "Kontrol önlemleri iyileştirilmelidir."
+        )
 
+    else:
+
+        st.error("🟥 High Risk")
+
+        st.write(
+            "Acil kontrol önlemleri gereklidir."
+        )
     # =========================================
     # ÖNERİLER
     # =========================================
