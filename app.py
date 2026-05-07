@@ -27,6 +27,7 @@ def temizle(text):
     }
 
     for k, v in degisim.items():
+
         text = text.replace(k, v)
 
     return text
@@ -48,7 +49,10 @@ st.title("COSHH Risk Sistemi")
 
 FILE = "020526 COSHH MAKRO.xlsm"
 
-df = pd.read_excel(FILE, sheet_name="DB")
+df = pd.read_excel(
+    FILE,
+    sheet_name="DB"
+)
 
 df.columns = df.columns.astype(str)
 
@@ -111,6 +115,10 @@ elif miktar < 100:
 else:
 
     miktar_band = "Large"
+
+# =====================================================
+# MARUZİYET
+# =====================================================
 
 maruziyet = st.selectbox(
     "Maruziyet Seviyesi",
@@ -390,17 +398,43 @@ if st.button("COSHH Değerlendir"):
 
     gerekli_ppe = []
 
+    eksik_ppe = []
+
     if "gaz" in fiziksel_lower:
+
         gerekli_ppe.append("Respirator")
 
     if "H314" in hkod:
+
         gerekli_ppe.append("Kimyasal Eldiven")
 
     if islem == "Püskürtme":
+
         gerekli_ppe.append("Koruyucu Gozluk")
 
     if hazard_group in ["D", "E"]:
+
         gerekli_ppe.append("Yuz Siperi")
+
+    # =====================================================
+    # PPE UYGUNLUK KONTROLÜ
+    # =====================================================
+
+    if "Respirator" in gerekli_ppe and not resp:
+
+        eksik_ppe.append("Respirator")
+
+    if "Kimyasal Eldiven" in gerekli_ppe and not eldiven:
+
+        eksik_ppe.append("Kimyasal Eldiven")
+
+    if "Koruyucu Gozluk" in gerekli_ppe and not gozluk:
+
+        eksik_ppe.append("Koruyucu Gozluk")
+
+    if "Yuz Siperi" in gerekli_ppe and not yuzsiperi:
+
+        eksik_ppe.append("Yuz Siperi")
 
     # =====================================================
     # CONTROL MEASURES
@@ -496,11 +530,39 @@ if st.button("COSHH Değerlendir"):
     st.subheader("Control Approach")
     st.write(kontrol)
 
+    # =====================================================
+    # PPE DURUMU
+    # =====================================================
+
+    st.subheader("PPE Uygunluk")
+
+    if len(eksik_ppe) == 0:
+
+        st.success("PPE UYGUN")
+
+    else:
+
+        st.error("PPE UYGUN DEGIL")
+
+        st.write("Eksik PPE:")
+
+        for e in eksik_ppe:
+
+            st.write("•", e)
+
+    # =====================================================
+    # CONTROL MEASURES
+    # =====================================================
+
     st.subheader("Control Measures")
 
     for k in kontrol_onlemleri:
 
         st.write("•", k)
+
+    # =====================================================
+    # RECOMMENDATIONS
+    # =====================================================
 
     st.subheader("Recommendations")
 
@@ -562,7 +624,11 @@ if st.button("COSHH Değerlendir"):
         ("Evaluator", temizle(degerlendiren)),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
-        ("Control Approach", kontrol)
+        ("Control Approach", kontrol),
+        (
+            "PPE Status",
+            "UYGUN" if len(eksik_ppe) == 0 else "UYGUN DEGIL"
+        )
 
     ]
 
@@ -599,7 +665,7 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
-    # PPE PDF
+    # CURRENT PPE PDF
     # =====================================================
 
     pdf.set_font(
@@ -643,6 +709,58 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
+    # PPE STATUS PDF
+    # =====================================================
+
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "PPE Status",
+        ln=True
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
+
+    if len(eksik_ppe) == 0:
+
+        pdf.cell(
+            190,
+            8,
+            "PPE UYGUN",
+            ln=True
+        )
+
+    else:
+
+        pdf.cell(
+            190,
+            8,
+            "PPE UYGUN DEGIL",
+            ln=True
+        )
+
+        for e in eksik_ppe:
+
+            pdf.cell(
+                190,
+                8,
+                "- " + temizle(e),
+                ln=True
+            )
+
+    pdf.ln(5)
+
+    # =====================================================
     # CONTROL MEASURES PDF
     # =====================================================
 
@@ -677,7 +795,7 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
-    # ÖNERİLER PDF
+    # RECOMMENDATIONS PDF
     # =====================================================
 
     pdf.set_font(
