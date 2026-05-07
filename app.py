@@ -110,6 +110,7 @@ maruziyet = st.selectbox(
         "Yüksek"
     ]
 )
+
 ucuculuk = st.selectbox(
     "Uçuculuk / Tozuma",
     [
@@ -118,6 +119,7 @@ ucuculuk = st.selectbox(
         "Yüksek"
     ]
 )
+
 # =====================================================
 # PERSONEL
 # =====================================================
@@ -157,7 +159,9 @@ if st.button("COSHH Değerlendir"):
 
     risk = 0
 
+    # =====================================================
     # H KODLARI
+    # =====================================================
 
     if "H350" in hkod:
         risk += 5
@@ -171,7 +175,9 @@ if st.button("COSHH Değerlendir"):
     if "H314" in hkod:
         risk += 3
 
+    # =====================================================
     # İŞLEM
+    # =====================================================
 
     if islem == "Püskürtme":
         risk += 3
@@ -179,12 +185,16 @@ if st.button("COSHH Değerlendir"):
     elif islem == "Isıtma":
         risk += 2
 
+    # =====================================================
     # SÜRE
+    # =====================================================
 
     if sure >= 4:
         risk += 2
 
+    # =====================================================
     # MİKTAR
+    # =====================================================
 
     if miktar >= 100:
         risk += 3
@@ -195,7 +205,9 @@ if st.button("COSHH Değerlendir"):
     elif miktar >= 1:
         risk += 1
 
+    # =====================================================
     # FİZİKSEL HAL
+    # =====================================================
 
     fiziksel_lower = fiziksel.lower()
 
@@ -211,19 +223,29 @@ if st.button("COSHH Değerlendir"):
     elif "sivi" in fiziksel_lower:
         risk += 1
 
+    # =====================================================
     # MARUZİYET
+    # =====================================================
 
     if maruziyet == "Yüksek":
         risk += 3
 
     elif maruziyet == "Orta":
         risk += 2
-if ucuculuk == "Yüksek":
-    risk += 3
 
-elif ucuculuk == "Orta":
-    risk += 2
+    # =====================================================
+    # UÇUCULUK
+    # =====================================================
+
+    if ucuculuk == "Yüksek":
+        risk += 3
+
+    elif ucuculuk == "Orta":
+        risk += 2
+
+    # =====================================================
     # PPE ETKİSİ
+    # =====================================================
 
     if not lokal:
         risk += 2
@@ -237,7 +259,9 @@ elif ucuculuk == "Orta":
     if not gozluk:
         risk += 1
 
+    # =====================================================
     # SONUÇ
+    # =====================================================
 
     if risk <= 5:
 
@@ -251,7 +275,9 @@ elif ucuculuk == "Orta":
 
         sonuc = "YUKSEK RISK"
 
+    # =====================================================
     # HAZARD GROUP
+    # =====================================================
 
     hazard_group = "A"
 
@@ -287,36 +313,41 @@ elif ucuculuk == "Orta":
 
         hazard_group = "B"
 
+    # =====================================================
     # CONTROL APPROACH
+    # =====================================================
 
     if hazard_group == "E":
 
-    kontrol = "Control Approach 4"
-
-elif hazard_group == "D":
-
-    if ucuculuk == "Yüksek":
-
         kontrol = "Control Approach 4"
 
+    elif hazard_group == "D":
+
+        if ucuculuk == "Yüksek":
+
+            kontrol = "Control Approach 4"
+
+        else:
+
+            kontrol = "Control Approach 3"
+
+    elif hazard_group == "C":
+
+        if miktar >= 100:
+
+            kontrol = "Control Approach 3"
+
+        else:
+
+            kontrol = "Control Approach 2"
+
     else:
 
-        kontrol = "Control Approach 3"
+        kontrol = "Control Approach 1"
 
-elif hazard_group == "C":
-
-    if miktar >= 100:
-
-        kontrol = "Control Approach 3"
-
-    else:
-
-        kontrol = "Control Approach 2"
-
-else:
-
-    kontrol = "Control Approach 1"
+    # =====================================================
     # GEREKLİ PPE
+    # =====================================================
 
     gerekli_ppe = []
 
@@ -332,7 +363,9 @@ else:
     if hazard_group in ["D", "E"]:
         gerekli_ppe.append("Yuz Siperi")
 
+    # =====================================================
     # CONTROL MEASURES
+    # =====================================================
 
     kontrol_onlemleri = []
 
@@ -361,7 +394,9 @@ else:
             "Kapali sistem onerilir"
         )
 
+    # =====================================================
     # ÖNERİLER
+    # =====================================================
 
     oneriler = []
 
@@ -391,16 +426,19 @@ else:
         )
 
     # =====================================================
-    # EKRAN SONUÇ
+    # SONUÇ EKRANI
     # =====================================================
 
     if sonuc == "DUSUK RISK":
+
         st.success(sonuc)
 
     elif sonuc == "ORTA RISK":
+
         st.warning(sonuc)
 
     else:
+
         st.error(sonuc)
 
     st.subheader("Hazard Group")
@@ -429,7 +467,9 @@ else:
 
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # FONT
+    # =====================================================
+    # BAŞLIK
+    # =====================================================
 
     pdf.set_font("Helvetica", "B", 18)
 
@@ -443,7 +483,9 @@ else:
 
     pdf.ln(10)
 
+    # =====================================================
     # BİLGİLER
+    # =====================================================
 
     bilgiler = [
 
@@ -489,7 +531,9 @@ else:
 
     pdf.ln(5)
 
-    # PPE
+    # =====================================================
+    # PPE PDF
+    # =====================================================
 
     pdf.set_font("Helvetica", "B", 14)
 
@@ -523,7 +567,9 @@ else:
 
     pdf.ln(5)
 
-    # CONTROL MEASURES
+    # =====================================================
+    # CONTROL MEASURES PDF
+    # =====================================================
 
     pdf.set_font("Helvetica", "B", 14)
 
@@ -547,7 +593,9 @@ else:
 
     pdf.ln(5)
 
-    # ÖNERİLER
+    # =====================================================
+    # RECOMMENDATIONS PDF
+    # =====================================================
 
     pdf.set_font("Helvetica", "B", 14)
 
@@ -571,7 +619,9 @@ else:
 
     pdf.ln(10)
 
+    # =====================================================
     # TARİH
+    # =====================================================
 
     pdf.set_font("Helvetica", "I", 9)
 
@@ -582,13 +632,17 @@ else:
         ln=True
     )
 
-    # KAYDET
+    # =====================================================
+    # PDF KAYDET
+    # =====================================================
 
     filename = "COSHH_REPORT.pdf"
 
     pdf.output(filename)
 
+    # =====================================================
     # DOWNLOAD
+    # =====================================================
 
     with open(filename, "rb") as f:
 
