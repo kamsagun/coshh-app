@@ -534,6 +534,25 @@ if st.button("COSHH Değerlendir"):
             "Uzun sureli maruziyet izlenmeli"
         )
     # =====================================================
+    # PRIORITY LEVEL
+    # =====================================================
+
+    if risk >= 25:
+
+        priority = "P1 - Critical"
+
+    elif risk >= 15:
+
+        priority = "P2 - High"
+
+    elif risk >= 8:
+
+        priority = "P3 - Medium"
+
+    else:
+
+        priority = "P4 - Low"
+    # =====================================================
     # REPORT STATUS
     # =====================================================
 
@@ -579,6 +598,23 @@ if st.button("COSHH Değerlendir"):
 
         st.error(sonuc)
 
+    st.subheader("Priority Level")
+
+    if priority == "P1 - Critical":
+
+        st.error(priority)
+
+    elif priority == "P2 - High":
+
+        st.warning(priority)
+
+    elif priority == "P3 - Medium":
+
+        st.info(priority)
+
+    else:
+
+        st.success(priority) 
         st.subheader("Report Status")
 
     if rapor_durumu == "ACCEPTABLE":
@@ -733,6 +769,7 @@ if st.button("COSHH Değerlendir"):
         ("Risk Result", sonuc),
         ("Report Status", rapor_durumu),
         ("Risk Score", risk),
+        ("Priority Level", priority),
         ("Control Approach", kontrol)
 
     ]
