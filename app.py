@@ -365,6 +365,57 @@ if st.button("COSHH Değerlendir"):
                 "H373 icin kimyasal eldiven onerilir"
             )
     # =====================================================
+    # EXPOSURE ROUTES
+    # =====================================================
+
+    maruziyet_yollari = []
+
+    # Gaz / buhar
+
+    if (
+        "H330" in hkod or
+        "gaz" in fiziksel.lower() or
+        "buhar" in fiziksel.lower()
+    ):
+
+        maruziyet_yollari.append(
+            "Inhalasyon Riski"
+        )
+
+    # Korozif / irritan
+
+    if (
+        "H314" in hkod or
+        "H315" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Deri Temasi Riski"
+        )
+
+    # Göz hasarı
+
+    if (
+        "H318" in hkod or
+        "H319" in hkod or
+        "H314" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Goz Temasi Riski"
+        )
+
+    # Oral toksisite
+
+    if (
+        "H300" in hkod or
+        "H301" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Yutma Riski"
+        )
+    # =====================================================
     # EMERGENCY MEASURES
     # =====================================================
 
@@ -528,7 +579,15 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
     # EMERGENCY SCREEN
     # =====================================================
+    # =====================================================
+    # EXPOSURE ROUTES SCREEN
+    # =====================================================
 
+    st.subheader("Maruziyet Yolları")
+
+    for m in maruziyet_yollari:
+
+        st.info(m)
     st.subheader("Acil Durum Önlemleri")
 
     for a in acil_durum:
