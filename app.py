@@ -444,6 +444,53 @@ if st.button("COSHH Değerlendir"):
     ):
         ghs.append("GHS08")
     # =====================================================
+# RECOMMENDATIONS
+# =====================================================
+
+oneriler = []
+
+if sonuc == "YUKSEK RISK":
+
+    oneriler.append(
+        "Kapali sistem dusunulmeli"
+    )
+
+if islem == "Püskürtme":
+
+    oneriler.append(
+        "LEV sistemi onerilir"
+    )
+
+if "H314" in hkod:
+
+    oneriler.append(
+        "Yuz siperi kullanilmali"
+    )
+
+if "H373" in hkod:
+
+    oneriler.append(
+        "Saglik gozetimi onerilir"
+    )
+
+if not resp:
+
+    oneriler.append(
+        "Respirator onerilir"
+    )
+
+if not eldiven:
+
+    oneriler.append(
+        "Kimyasal eldiven onerilir"
+    )
+
+if not gozluk:
+
+    oneriler.append(
+        "Koruyucu gozluk onerilir"
+    )
+    # =====================================================
     # RESULT SCREEN
     # =====================================================
 
@@ -469,6 +516,11 @@ if st.button("COSHH Değerlendir"):
     # GHS ICONS SCREEN
     # =====================================================
 
+    st.subheader("Öneriler")
+    for o in oneriler:
+
+        st.write("•", o)
+  
     st.subheader("GHS Pictograms")
 
     for g in ghs:
