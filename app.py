@@ -129,33 +129,7 @@ st.subheader("Havalandırma")
 
 lokal = st.checkbox("Lokal Havalandırma")
 genel = st.checkbox("Genel Havalandırma")
-    # =====================================================
-    # GEREKLI PPE PDF
-    # =====================================================
 
-    pdf.set_font("Helvetica", "B", 14)
-
-    pdf.cell(
-        190,
-        10,
-        "Required PPE",
-        ln=True
-    )
-
-    pdf.set_font("Helvetica", "", 11)
-
-    for g in gerekli_ppe:
-
-        pdf.set_x(20)
-
-        pdf.cell(
-            190,
-            8,
-            f"- {g}",
-            ln=True
-        )
-
-    pdf.ln(5)
 # =====================================================
 # PPE
 # =====================================================
@@ -223,7 +197,7 @@ if st.button("COSHH Değerlendir"):
         risk += 1
 
     # =====================================================
-    # FİZİKSEL HAL ETKİSİ
+    # FİZİKSEL HAL
     # =====================================================
 
     fiziksel_lower = fiziksel.lower()
@@ -341,6 +315,60 @@ if st.button("COSHH Değerlendir"):
         kontrol = "Control Approach 1"
 
     # =====================================================
+    # GEREKLİ PPE
+    # =====================================================
+
+    gerekli_ppe = []
+
+    if "gaz" in fiziksel_lower:
+        gerekli_ppe.append("Respirator")
+
+    if "H314" in hkod:
+        gerekli_ppe.append("Kimyasal Eldiven")
+
+    if islem == "Püskürtme":
+        gerekli_ppe.append("Koruyucu Gozluk")
+
+    if hazard_group in ["D", "E"]:
+        gerekli_ppe.append("Yuz Siperi")
+
+    # =====================================================
+    # CONTROL MEASURES
+    # =====================================================
+
+    kontrol_onlemleri = []
+
+    if kontrol == "Control Approach 4":
+
+        kontrol_onlemleri.append(
+            "Containment sistemi kullanilmali"
+        )
+
+    if kontrol == "Control Approach 3":
+
+        kontrol_onlemleri.append(
+            "Local Exhaust Ventilation gerekli"
+        )
+
+    if hazard_group in ["D", "E"]:
+
+        kontrol_onlemleri.append(
+            "Yetkili personel ile calisilmali"
+        )
+
+    if "gaz" in fiziksel_lower:
+
+        kontrol_onlemleri.append(
+            "Gaz detector sistemi onerilir"
+        )
+
+    if islem == "Püskürtme":
+
+        kontrol_onlemleri.append(
+            "Kapali sistem uygulamasi onerilir"
+        )
+
+    # =====================================================
     # RENKLİ SONUÇ
     # =====================================================
 
@@ -366,74 +394,38 @@ if st.button("COSHH Değerlendir"):
 
         st.success("🟩 Low Risk")
 
-        st.write(
-            "Kabul edilebilir risk seviyesi."
-        )
-
     elif sonuc == "ORTA RISK":
 
         st.warning("🟨 Medium Risk")
-
-        st.write(
-            "Kontrol önlemleri iyileştirilmelidir."
-        )
 
     else:
 
         st.error("🟥 High Risk")
 
-        st.write(
-            "Acil kontrol önlemleri gereklidir."
-        )
-
-    st.subheader(kontrol)
-
     st.write("Hazard Group:", hazard_group)
+
+    st.write("Control Approach:", kontrol)
+
     # =====================================================
-    # OTOMATIK PPE GEREKSINIMI
-    # =====================================================
-
-    gerekli_ppe = []
-
-    if "gaz" in fiziksel_lower:
-        gerekli_ppe.append("Respirator")
-
-    if "H314" in hkod:
-        gerekli_ppe.append("Kimyasal Eldiven")
-
-    if islem == "Püskürtme":
-        gerekli_ppe.append("Koruyucu Gozluk")
-
-    if hazard_group in ["D", "E"]:
-        gerekli_ppe.append("Yuz Siperi")
-    
-    # =====================================================
-    # CONTROL MEASURES PDF
+    # GEREKLİ PPE
     # =====================================================
 
-    pdf.set_font("Helvetica", "B", 14)
+    st.subheader("Gerekli PPE")
 
-    pdf.cell(
-        190,
-        10,
-        "Control Measures",
-        ln=True
-    )
+    for g in gerekli_ppe:
 
-    pdf.set_font("Helvetica", "", 11)
+        st.write("•", g)
+
+    # =====================================================
+    # CONTROL MEASURES
+    # =====================================================
+
+    st.subheader("Control Measures")
 
     for k in kontrol_onlemleri:
 
-        pdf.set_x(20)
+        st.write("•", k)
 
-        pdf.cell(
-            190,
-            8,
-            f"- {temizle(k)}",
-            ln=True
-        )
-
-    pdf.ln(5)
     # =====================================================
     # ÖNERİLER
     # =====================================================
@@ -455,60 +447,6 @@ if st.button("COSHH Değerlendir"):
     if not gozluk:
         oneriler.append("Koruyucu gozluk onerilir")
 
-    if hazard_group == "E":
-        oneriler.append("Kanserojen proseduru uygulanmali")
-
-    if kontrol == "Control Approach 4":
-        oneriler.append("Containment sistemi gerekli")
-
-    if fiziksel_lower == "gaz":
-        oneriler.append("Gaz monitorizasyonu onerilir")
-    st.subheader("Gerekli PPE")
-
-    for g in gerekli_ppe:
-
-        st.write("•", g)
-        # =====================================================
-    # CONTROL MEASURES
-    # =====================================================
-
-    kontrol_onlemleri = []
-
-    if kontrol == "Control Approach 4":
-
-        kontrol_onlemleri.append(
-            "Containment sistemi kullanilmali"
-        )
-
-    if kontrol == "Control Approach 3":
-
-        kontrol_onlemleri.append(
-            "Local Exhaust Ventilation gerekli"
-        )
-
-    if hazard_group in ["D", "E"]:
-
-        kontrol_onlemleri.append(
-            "Yetkili personel ile calisilmalı"
-        )
-
-    if fiziksel_lower == "gaz":
-
-        kontrol_onlemleri.append(
-            "Gaz detector sistemi onerilir"
-        )
-
-    if islem == "Püskürtme":
-
-        kontrol_onlemleri.append(
-            "Kapali sistem uygulamasi onerilir"
-        )
-
-    st.subheader("Control Measures")
-
-    for k in kontrol_onlemleri:
-
-        st.write("•", k)
     st.subheader("Oneriler")
 
     for o in oneriler:
@@ -532,10 +470,11 @@ if st.button("COSHH Değerlendir"):
     pdf.set_font("Helvetica", "B", 18)
 
     pdf.cell(
-        190,
+        0,
         12,
         "COSHH RISK REPORT",
-        ln=True
+        ln=True,
+        align="C"
     )
 
     pdf.ln(10)
@@ -565,40 +504,62 @@ if st.button("COSHH Değerlendir"):
 
     for label, value in bilgiler:
 
-        pdf.set_x(20)
-
         pdf.set_font("Helvetica", "B", 11)
 
         pdf.cell(
-            45,
+            60,
             8,
             f"{label}:",
-            0,
-            0
+            border=0
         )
 
         pdf.set_font("Helvetica", "", 11)
 
         pdf.cell(
-            100,
+            120,
             8,
             str(value),
-            0,
-            1
+            ln=True
         )
 
     pdf.ln(5)
 
     # =====================================================
-    # PPE
+    # GEREKLİ PPE PDF
     # =====================================================
 
     pdf.set_font("Helvetica", "B", 14)
 
     pdf.cell(
-        190,
+        0,
         10,
-        "PPE",
+        "Required PPE",
+        ln=True
+    )
+
+    pdf.set_font("Helvetica", "", 11)
+
+    for g in gerekli_ppe:
+
+        pdf.cell(
+            0,
+            8,
+            f"- {g}",
+            ln=True
+        )
+
+    pdf.ln(5)
+
+    # =====================================================
+    # PPE PDF
+    # =====================================================
+
+    pdf.set_font("Helvetica", "B", 14)
+
+    pdf.cell(
+        0,
+        10,
+        "Current PPE",
         ln=True
     )
 
@@ -616,10 +577,8 @@ if st.button("COSHH Değerlendir"):
 
     for label, value in ppe_list:
 
-        pdf.set_x(20)
-
         pdf.cell(
-            190,
+            0,
             8,
             f"{label}: {value}",
             ln=True
@@ -628,13 +587,38 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
-    # ÖNERİLER
+    # CONTROL MEASURES PDF
     # =====================================================
 
     pdf.set_font("Helvetica", "B", 14)
 
     pdf.cell(
-        190,
+        0,
+        10,
+        "Control Measures",
+        ln=True
+    )
+
+    pdf.set_font("Helvetica", "", 11)
+
+    for k in kontrol_onlemleri:
+
+        pdf.multi_cell(
+            0,
+            8,
+            f"- {temizle(k)}"
+        )
+
+    pdf.ln(5)
+
+    # =====================================================
+    # ÖNERİLER PDF
+    # =====================================================
+
+    pdf.set_font("Helvetica", "B", 14)
+
+    pdf.cell(
+        0,
         10,
         "Recommendations",
         ln=True
@@ -644,13 +628,10 @@ if st.button("COSHH Değerlendir"):
 
     for o in oneriler:
 
-        pdf.set_x(20)
-
-        pdf.cell(
-            190,
+        pdf.multi_cell(
+            0,
             8,
-            f"- {temizle(o)}",
-            ln=True
+            f"- {temizle(o)}"
         )
 
     pdf.ln(10)
@@ -661,10 +642,8 @@ if st.button("COSHH Değerlendir"):
 
     pdf.set_font("Helvetica", "I", 9)
 
-    pdf.set_x(20)
-
     pdf.cell(
-        190,
+        0,
         8,
         f"Generated: {datetime.now()}",
         ln=True
