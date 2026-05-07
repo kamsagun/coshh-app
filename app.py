@@ -416,6 +416,59 @@ if st.button("COSHH Değerlendir"):
             "Yutma Riski"
         )
     # =====================================================
+    # FIRST AID
+    # =====================================================
+
+    ilk_yardim = []
+
+    # Inhalasyon
+
+    if "Inhalasyon Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kisiyi temiz havaya cikar"
+        )
+
+        ilk_yardim.append(
+            "Solunum sikintisinda tibbi yardim al"
+        )
+
+    # Deri
+
+    if "Deri Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kontamine kiyafetleri cikar"
+        )
+
+        ilk_yardim.append(
+            "Bol su ile yika"
+        )
+
+    # Goz
+
+    if "Goz Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Gozleri en az 15 dakika yika"
+        )
+
+        ilk_yardim.append(
+            "Kontakt lensleri cikar"
+        )
+
+    # Yutma
+
+    if "Yutma Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kusturmaya calisma"
+        )
+
+        ilk_yardim.append(
+            "Derhal tibbi yardim al"
+        )
+    # =====================================================
     # EMERGENCY MEASURES
     # =====================================================
 
@@ -588,6 +641,15 @@ if st.button("COSHH Değerlendir"):
     for m in maruziyet_yollari:
 
         st.info(m)
+    # =====================================================
+    # FIRST AID SCREEN
+    # =====================================================
+
+    st.subheader("İlk Yardım")
+
+    for i in ilk_yardim:
+
+        st.success(i)
     st.subheader("Acil Durum Önlemleri")
 
     for a in acil_durum:
