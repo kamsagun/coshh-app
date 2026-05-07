@@ -324,6 +324,13 @@ if st.button("COSHH Değerlendir"):
     # RESULT SCREEN
     # =====================================================
 
+        
+    st.subheader("Risk Score")
+
+    st.metric(
+        "Total Risk Score",
+        risk
+    )
     if sonuc == "DUSUK RISK":
 
         st.success(sonuc)
