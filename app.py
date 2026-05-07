@@ -37,11 +37,11 @@ def temizle(text):
 # =====================================================
 
 st.set_page_config(
-    page_title="COSHH Risk Sistemi",
+    page_title="COSHH Professional",
     layout="wide"
 )
 
-st.title("COSHH Risk Sistemi")
+st.title("COSHH Professional Risk Assessment")
 
 # =====================================================
 # EXCEL
@@ -78,19 +78,21 @@ fiziksel = str(satir.get("Fiziksel Hal", "-"))
 # =====================================================
 
 islem = st.selectbox(
-    "İşlem",
+    "İşlem Türü",
     [
         "Karıştırma",
         "Transfer",
         "Püskürtme",
-        "Isıtma"
+        "Isıtma",
+        "Dolum",
+        "Numune Alma"
     ]
 )
 
 sure = st.slider(
-    "Süre (Saat)",
+    "Çalışma Süresi (Saat)",
     1,
-    8,
+    12,
     1
 )
 
@@ -139,6 +141,16 @@ ucuculuk = st.selectbox(
 )
 
 # =====================================================
+# ÇALIŞMA ORTAMI
+# =====================================================
+
+st.subheader("Çalışma Ortamı")
+
+kapali_alan = st.checkbox("Kapalı Alan")
+sicak_islem = st.checkbox("Sıcak İşlem")
+vardiya = st.checkbox("Uzun Vardiya")
+
+# =====================================================
 # PERSONEL
 # =====================================================
 
@@ -156,12 +168,13 @@ st.subheader("Havalandırma")
 
 lokal = st.checkbox("Lokal Havalandırma")
 genel = st.checkbox("Genel Havalandırma")
+lev = st.checkbox("LEV Sistemi")
 
 # =====================================================
 # PPE
 # =====================================================
 
-st.subheader("PPE")
+st.subheader("Kullanılan PPE")
 
 resp = st.checkbox("Respiratör")
 eldiven = st.checkbox("Kimyasal Eldiven")
@@ -193,32 +206,44 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     if "H350" in hkod:
-        risk += 5
+        risk += 6
 
     if "H340" in hkod:
         risk += 5
 
     if "H330" in hkod:
-        risk += 4
+        risk += 5
 
     if "H314" in hkod:
-        risk += 3
+        risk += 4
+
+    if "H315" in hkod:
+        risk += 2
+
+    if "H319" in hkod:
+        risk += 2
 
     # =====================================================
     # İŞLEM
     # =====================================================
 
     if islem == "Püskürtme":
-        risk += 3
+        risk += 4
 
     elif islem == "Isıtma":
+        risk += 3
+
+    elif islem == "Dolum":
         risk += 2
 
     # =====================================================
     # SÜRE
     # =====================================================
 
-    if sure >= 4:
+    if sure >= 8:
+        risk += 3
+
+    elif sure >= 4:
         risk += 2
 
     # =====================================================
@@ -226,7 +251,7 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     if miktar >= 100:
-        risk += 3
+        risk += 4
 
     elif miktar >= 10:
         risk += 2
@@ -241,13 +266,13 @@ if st.button("COSHH Değerlendir"):
     fiziksel_lower = fiziksel.lower()
 
     if "gaz" in fiziksel_lower:
-        risk += 3
+        risk += 4
 
     elif "buhar" in fiziksel_lower:
-        risk += 2
+        risk += 3
 
     elif "toz" in fiziksel_lower:
-        risk += 2
+        risk += 3
 
     elif "sivi" in fiziksel_lower:
         risk += 1
@@ -257,7 +282,7 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     if maruziyet == "Yüksek":
-        risk += 3
+        risk += 4
 
     elif maruziyet == "Orta":
         risk += 2
@@ -267,10 +292,23 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     if ucuculuk == "Yüksek":
-        risk += 3
+        risk += 4
 
     elif ucuculuk == "Orta":
         risk += 2
+
+    # =====================================================
+    # ORTAM
+    # =====================================================
+
+    if kapali_alan:
+        risk += 3
+
+    if sicak_islem:
+        risk += 2
+
+    if vardiya:
+        risk += 1
 
     # =====================================================
     # PPE ETKİSİ
@@ -279,24 +317,21 @@ if st.button("COSHH Değerlendir"):
     if not lokal:
         risk += 2
 
+    if not lev:
+        risk += 2
+
     if not resp:
         risk += 2
 
-    if not eldiven:
-        risk += 1
-
-    if not gozluk:
-        risk += 1
-
     # =====================================================
-    # SONUÇ
+    # RİSK SONUCU
     # =====================================================
 
-    if risk <= 5:
+    if risk <= 8:
 
         sonuc = "DUSUK RISK"
 
-    elif risk <= 10:
+    elif risk <= 18:
 
         sonuc = "ORTA RISK"
 
@@ -356,37 +391,13 @@ if st.button("COSHH Değerlendir"):
 
             kontrol = "Control Approach 4"
 
-        elif miktar_band == "Large":
-
-            kontrol = "Control Approach 4"
-
         else:
 
             kontrol = "Control Approach 3"
 
     elif hazard_group == "C":
 
-        if miktar_band == "Large":
-
-            kontrol = "Control Approach 3"
-
-        elif ucuculuk == "Yüksek":
-
-            kontrol = "Control Approach 3"
-
-        else:
-
-            kontrol = "Control Approach 2"
-
-    elif hazard_group == "B":
-
-        if ucuculuk == "Yüksek":
-
-            kontrol = "Control Approach 2"
-
-        else:
-
-            kontrol = "Control Approach 1"
+        kontrol = "Control Approach 2"
 
     else:
 
@@ -416,8 +427,12 @@ if st.button("COSHH Değerlendir"):
 
         gerekli_ppe.append("Yuz Siperi")
 
+    if kontrol == "Control Approach 4":
+
+        gerekli_ppe.append("Koruyucu Kiyafet")
+
     # =====================================================
-    # PPE UYGUNLUK KONTROLÜ
+    # PPE UYGUNLUK
     # =====================================================
 
     if "Respirator" in gerekli_ppe and not resp:
@@ -436,6 +451,10 @@ if st.button("COSHH Değerlendir"):
 
         eksik_ppe.append("Yuz Siperi")
 
+    if "Koruyucu Kiyafet" in gerekli_ppe and not koruyucu:
+
+        eksik_ppe.append("Koruyucu Kiyafet")
+
     # =====================================================
     # CONTROL MEASURES
     # =====================================================
@@ -448,10 +467,19 @@ if st.button("COSHH Değerlendir"):
             "Containment sistemi kullanilmali"
         )
 
-    if kontrol == "Control Approach 3":
+    if kontrol in [
+        "Control Approach 3",
+        "Control Approach 4"
+    ]:
 
         kontrol_onlemleri.append(
-            "Local Exhaust Ventilation gerekli"
+            "LEV sistemi zorunlu"
+        )
+
+    if kapali_alan:
+
+        kontrol_onlemleri.append(
+            "Kapali alan proseduru uygulanmali"
         )
 
     if hazard_group in ["D", "E"]:
@@ -466,50 +494,22 @@ if st.button("COSHH Değerlendir"):
             "Gaz detector sistemi onerilir"
         )
 
-    if islem == "Püskürtme":
-
-        kontrol_onlemleri.append(
-            "Kapali sistem onerilir"
-        )
-
     # =====================================================
-    # ÖNERİLER
+    # OEL / WEL
     # =====================================================
 
-    oneriler = []
+    oel_durumu = "Kontrol Gerekli"
 
-    if not lokal:
+    if sonuc == "DUSUK RISK":
 
-        oneriler.append(
-            "Lokal havalandirma onerilir"
-        )
+        oel_durumu = "Muhtemel Uygun"
 
-    if not genel:
+    elif sonuc == "YUKSEK RISK":
 
-        oneriler.append(
-            "Genel havalandirma yeterli olmayabilir"
-        )
-
-    if not resp:
-
-        oneriler.append(
-            "Respirator onerilir"
-        )
-
-    if not eldiven:
-
-        oneriler.append(
-            "Kimyasal dayanimli eldiven onerilir"
-        )
-
-    if not gozluk:
-
-        oneriler.append(
-            "Koruyucu gozluk onerilir"
-        )
+        oel_durumu = "OEL/WEL Asim Riski"
 
     # =====================================================
-    # EKRAN SONUÇ
+    # EKRAN
     # =====================================================
 
     if sonuc == "DUSUK RISK":
@@ -530,9 +530,18 @@ if st.button("COSHH Değerlendir"):
     st.subheader("Control Approach")
     st.write(kontrol)
 
+    st.subheader("OEL / WEL Durumu")
+    st.write(oel_durumu)
+
     # =====================================================
-    # PPE DURUMU
+    # PPE
     # =====================================================
+
+    st.subheader("Gerekli PPE")
+
+    for g in gerekli_ppe:
+
+        st.write("•", g)
 
     st.subheader("PPE Uygunluk")
 
@@ -543,8 +552,6 @@ if st.button("COSHH Değerlendir"):
     else:
 
         st.error("PPE UYGUN DEGIL")
-
-        st.write("Eksik PPE:")
 
         for e in eksik_ppe:
 
@@ -559,16 +566,6 @@ if st.button("COSHH Değerlendir"):
     for k in kontrol_onlemleri:
 
         st.write("•", k)
-
-    # =====================================================
-    # RECOMMENDATIONS
-    # =====================================================
-
-    st.subheader("Recommendations")
-
-    for o in oneriler:
-
-        st.write("•", o)
 
     # =====================================================
     # PDF
@@ -596,7 +593,7 @@ if st.button("COSHH Değerlendir"):
     pdf.cell(
         190,
         10,
-        "COSHH RISK REPORT",
+        "COSHH PROFESSIONAL REPORT",
         ln=True,
         align="C"
     )
@@ -604,7 +601,7 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(10)
 
     # =====================================================
-    # RAPOR BİLGİLERİ
+    # RAPOR
     # =====================================================
 
     bilgiler = [
@@ -619,16 +616,10 @@ if st.button("COSHH Değerlendir"):
         ("Quantity Band", miktar_band),
         ("Exposure", temizle(maruziyet)),
         ("Volatility", temizle(ucuculuk)),
-        ("Employee", temizle(calisan)),
-        ("Department", temizle(departman)),
-        ("Evaluator", temizle(degerlendiren)),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
         ("Control Approach", kontrol),
-        (
-            "PPE Status",
-            "UYGUN" if len(eksik_ppe) == 0 else "UYGUN DEGIL"
-        )
+        ("OEL/WEL", oel_durumu)
 
     ]
 
@@ -665,7 +656,7 @@ if st.button("COSHH Değerlendir"):
     pdf.ln(5)
 
     # =====================================================
-    # CURRENT PPE PDF
+    # PPE PDF
     # =====================================================
 
     pdf.set_font(
@@ -677,7 +668,7 @@ if st.button("COSHH Değerlendir"):
     pdf.cell(
         190,
         10,
-        "Current PPE",
+        "Required PPE",
         ln=True
     )
 
@@ -687,22 +678,12 @@ if st.button("COSHH Değerlendir"):
         11
     )
 
-    ppe_list = [
-
-        ("Respirator", resp),
-        ("Gloves", eldiven),
-        ("Goggles", gozluk),
-        ("Face Shield", yuzsiperi),
-        ("Protective Clothing", koruyucu)
-
-    ]
-
-    for label, value in ppe_list:
+    for g in gerekli_ppe:
 
         pdf.cell(
             190,
             8,
-            f"{label}: {value}",
+            "- " + temizle(g),
             ln=True
         )
 
@@ -792,40 +773,6 @@ if st.button("COSHH Değerlendir"):
             ln=True
         )
 
-    pdf.ln(5)
-
-    # =====================================================
-    # RECOMMENDATIONS PDF
-    # =====================================================
-
-    pdf.set_font(
-        "Helvetica",
-        "B",
-        14
-    )
-
-    pdf.cell(
-        190,
-        10,
-        "Recommendations",
-        ln=True
-    )
-
-    pdf.set_font(
-        "Helvetica",
-        "",
-        11
-    )
-
-    for o in oneriler:
-
-        pdf.cell(
-            190,
-            8,
-            "- " + temizle(o),
-            ln=True
-        )
-
     pdf.ln(10)
 
     # =====================================================
@@ -846,10 +793,10 @@ if st.button("COSHH Değerlendir"):
     )
 
     # =====================================================
-    # PDF KAYDET
+    # KAYDET
     # =====================================================
 
-    filename = "COSHH_REPORT.pdf"
+    filename = "COSHH_PRO_REPORT.pdf"
 
     pdf.output(filename)
 
