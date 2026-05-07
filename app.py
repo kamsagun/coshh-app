@@ -819,52 +819,49 @@ if st.button("COSHH Değerlendir"):
         ln=True
     )
 
-    x_pos = 20
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
 
     for g in ghs:
 
         if g == "GHS05":
 
-            pdf.image(
-                "ghs05.png",
-                x=x_pos,
-                w=18
+            pdf.cell(
+                190,
+                8,
+                "GHS05 - Corrosive",
+                ln=True
             )
-
-            x_pos += 25
 
         if g == "GHS06":
 
-            pdf.image(
-                "ghs06.png",
-                x=x_pos,
-                w=18
+            pdf.cell(
+                190,
+                8,
+                "GHS06 - Toxic",
+                ln=True
             )
-
-            x_pos += 25
 
         if g == "GHS07":
 
-            pdf.image(
-                "ghs07.png",
-                x=x_pos,
-                w=18
+            pdf.cell(
+                190,
+                8,
+                "GHS07 - Irritant",
+                ln=True
             )
-
-            x_pos += 25
 
         if g == "GHS08":
 
-            pdf.image(
-                "ghs08.png",
-                x=x_pos,
-                w=18
+            pdf.cell(
+                190,
+                8,
+                "GHS08 - Health Hazard",
+                ln=True
             )
-
-            x_pos += 25
-
-    pdf.ln(25)
-
     # =====================================================
     # DATE
     # =====================================================
