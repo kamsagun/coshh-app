@@ -110,7 +110,14 @@ maruziyet = st.selectbox(
         "Yüksek"
     ]
 )
-
+ucuculuk = st.selectbox(
+    "Uçuculuk / Tozuma",
+    [
+        "Düşük",
+        "Orta",
+        "Yüksek"
+    ]
+)
 # =====================================================
 # PERSONEL
 # =====================================================
@@ -211,7 +218,11 @@ if st.button("COSHH Değerlendir"):
 
     elif maruziyet == "Orta":
         risk += 2
+if ucuculuk == "Yüksek":
+    risk += 3
 
+elif ucuculuk == "Orta":
+    risk += 2
     # PPE ETKİSİ
 
     if not lokal:
@@ -280,19 +291,27 @@ if st.button("COSHH Değerlendir"):
 
     if hazard_group == "E":
 
+    kontrol = "Control Approach 4"
+
+elif hazard_group == "D":
+
+    if ucuculuk == "Yüksek":
         kontrol = "Control Approach 4"
 
-    elif hazard_group == "D":
-
+    else:
         kontrol = "Control Approach 3"
 
-    elif hazard_group == "C":
+elif hazard_group == "C":
 
-        kontrol = "Control Approach 2"
+    if miktar >= 100:
+        kontrol = "Control Approach 3"
 
     else:
+        kontrol = "Control Approach 2"
 
-        kontrol = "Control Approach 1"
+else:
+
+    kontrol = "Control Approach 1"
 
     # GEREKLİ PPE
 
@@ -433,6 +452,7 @@ if st.button("COSHH Değerlendir"):
         ("Duration", f"{sure} hours"),
         ("Amount", str(miktar)),
         ("Exposure", temizle(maruziyet)),
+        ("Volatility", temizle(ucuculuk)),
         ("Employee", temizle(calisan)),
         ("Department", temizle(departman)),
         ("Evaluator", temizle(degerlendiren)),
