@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
-
+from PIL import Image
 # =====================================================
 # TÜRKÇE KARAKTER TEMİZLE
 # =====================================================
@@ -596,11 +596,37 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
 
     st.subheader("GHS Pictograms")
-
     for g in ghs:
 
-        st.write("•", g)
+    st.write("•", g)
 
+    if "GHS05" in g:
+
+        st.image(
+            "ghs05.png",
+            width=100
+        )
+
+    if "GHS06" in g:
+
+        st.image(
+            "ghs06.png",
+            width=100
+        )
+
+    if "GHS07" in g:
+
+        st.image(
+            "ghs07.png",
+            width=100
+        )
+
+    if "GHS08" in g:
+
+        st.image(
+            "ghs08.png",
+            width=100
+        )
     # =====================================================
     # PPE
     # =====================================================
