@@ -129,7 +129,33 @@ st.subheader("Havalandırma")
 
 lokal = st.checkbox("Lokal Havalandırma")
 genel = st.checkbox("Genel Havalandırma")
+    # =====================================================
+    # GEREKLI PPE PDF
+    # =====================================================
 
+    pdf.set_font("Helvetica", "B", 14)
+
+    pdf.cell(
+        190,
+        10,
+        "Required PPE",
+        ln=True
+    )
+
+    pdf.set_font("Helvetica", "", 11)
+
+    for g in gerekli_ppe:
+
+        pdf.set_x(20)
+
+        pdf.cell(
+            190,
+            8,
+            f"- {g}",
+            ln=True
+        )
+
+    pdf.ln(5)
 # =====================================================
 # PPE
 # =====================================================
@@ -380,6 +406,34 @@ if st.button("COSHH Değerlendir"):
 
     if hazard_group in ["D", "E"]:
         gerekli_ppe.append("Yuz Siperi")
+    
+    # =====================================================
+    # CONTROL MEASURES PDF
+    # =====================================================
+
+    pdf.set_font("Helvetica", "B", 14)
+
+    pdf.cell(
+        190,
+        10,
+        "Control Measures",
+        ln=True
+    )
+
+    pdf.set_font("Helvetica", "", 11)
+
+    for k in kontrol_onlemleri:
+
+        pdf.set_x(20)
+
+        pdf.cell(
+            190,
+            8,
+            f"- {temizle(k)}",
+            ln=True
+        )
+
+    pdf.ln(5)
     # =====================================================
     # ÖNERİLER
     # =====================================================
