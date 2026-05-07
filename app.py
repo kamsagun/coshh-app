@@ -3,9 +3,9 @@ import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
 
-# =========================
+# =========================================
 # TÜRKÇE KARAKTER TEMİZLE
-# =========================
+# =========================================
 
 def temizle(text):
 
@@ -31,18 +31,20 @@ def temizle(text):
 
     return text
 
-# =========================
-# SAYFA AYARI
-# =========================
+# =========================================
+# SAYFA
+# =========================================
 
 st.set_page_config(
     page_title="COSHH Risk Sistemi",
     layout="wide"
 )
 
-# =========================
-# EXCEL OKU
-# =========================
+st.title("COSHH Risk Sistemi")
+
+# =========================================
+# EXCEL
+# =========================================
 
 FILE = "020526 COSHH MAKRO.xlsm"
 
@@ -50,15 +52,9 @@ df = pd.read_excel(FILE, sheet_name="DB")
 
 df.columns = df.columns.astype(str)
 
-# =========================
-# BAŞLIK
-# =========================
-
-st.title("COSHH Risk Sistemi")
-
-# =========================
-# KİMYASAL SEÇ
-# =========================
+# =========================================
+# KİMYASAL
+# =========================================
 
 kimyasallar = df["Kimyasal Adı"].dropna().unique()
 
@@ -68,10 +64,6 @@ secili = st.selectbox(
 )
 
 satir = df[df["Kimyasal Adı"] == secili].iloc[0]
-
-# =========================
-# VERİLER
-# =========================
 
 cas = str(satir.get("CAS No", "-"))
 hkod = str(satir.get("H Kodları", "-"))
@@ -83,9 +75,9 @@ st.write("Fiziksel Hal:", fiziksel)
 
 st.divider()
 
-# =========================
+# =========================================
 # İŞLEM
-# =========================
+# =========================================
 
 islem = st.selectbox(
     "İşlem",
@@ -119,9 +111,9 @@ maruziyet = st.selectbox(
     ]
 )
 
-# =========================
+# =========================================
 # PERSONEL
-# =========================
+# =========================================
 
 st.subheader("Personel Bilgileri")
 
@@ -129,18 +121,18 @@ calisan = st.text_input("Çalışan")
 departman = st.text_input("Departman")
 degerlendiren = st.text_input("Değerlendiren")
 
-# =========================
+# =========================================
 # HAVALANDIRMA
-# =========================
+# =========================================
 
 st.subheader("Havalandırma")
 
 lokal = st.checkbox("Lokal Havalandırma")
 genel = st.checkbox("Genel Havalandırma")
 
-# =========================
+# =========================================
 # PPE
-# =========================
+# =========================================
 
 st.subheader("PPE")
 
@@ -150,15 +142,15 @@ gozluk = st.checkbox("Koruyucu Gözlük")
 yuzsiperi = st.checkbox("Yüz Siperi")
 koruyucu = st.checkbox("Koruyucu Kıyafet")
 
-# =========================
-# DEĞERLENDİR
-# =========================
+# =========================================
+# HESAPLA
+# =========================================
 
 if st.button("COSHH Değerlendir"):
 
     risk = 0
 
-    # H KODLARI
+    # H Kodları
 
     if "H350" in hkod:
         risk += 5
@@ -172,7 +164,7 @@ if st.button("COSHH Değerlendir"):
     if "H314" in hkod:
         risk += 3
 
-    # İŞLEM
+    # İşlem
 
     if islem == "Püskürtme":
         risk += 3
@@ -180,12 +172,12 @@ if st.button("COSHH Değerlendir"):
     elif islem == "Isıtma":
         risk += 2
 
-    # SÜRE
+    # Süre
 
     if sure >= 4:
         risk += 2
 
-    # MİKTAR
+    # Miktar
 
     if miktar >= 100:
         risk += 3
@@ -196,7 +188,7 @@ if st.button("COSHH Değerlendir"):
     elif miktar >= 1:
         risk += 1
 
-    # MARUZİYET
+    # Maruziyet
 
     if maruziyet == "Yüksek":
         risk += 3
@@ -218,22 +210,22 @@ if st.button("COSHH Değerlendir"):
     if not gozluk:
         risk += 1
 
-    # =========================
+    # =========================================
     # SONUÇ
-    # =========================
+    # =========================================
 
     if risk <= 5:
-        sonuc = "DÜŞÜK RİSK"
+        sonuc = "DUSUK RISK"
 
     elif risk <= 10:
-        sonuc = "ORTA RİSK"
+        sonuc = "ORTA RISK"
 
     else:
-        sonuc = "YÜKSEK RİSK"
+        sonuc = "YUKSEK RISK"
 
-    # =========================
+    # =========================================
     # HAZARD GROUP
-    # =========================
+    # =========================================
 
     if risk >= 12:
         hazard_group = "A"
@@ -244,9 +236,9 @@ if st.button("COSHH Değerlendir"):
     else:
         hazard_group = "C"
 
-    # =========================
+    # =========================================
     # CONTROL APPROACH
-    # =========================
+    # =========================================
 
     if hazard_group == "A":
         kontrol = "Control Approach 1"
@@ -257,43 +249,43 @@ if st.button("COSHH Değerlendir"):
     else:
         kontrol = "Control Approach 3"
 
-    # =========================
-    # EKRAN SONUCU
-    # =========================
+    # =========================================
+    # EKRAN
+    # =========================================
 
     st.header(sonuc)
 
     st.subheader(kontrol)
 
-    # =========================
+    # =========================================
     # ÖNERİLER
-    # =========================
+    # =========================================
 
     oneriler = []
 
     if not lokal:
-        oneriler.append("Lokal havalandırma önerilir")
+        oneriler.append("Lokal havalandirma onerilir")
 
     if not genel:
-        oneriler.append("Genel havalandırma yeterli olmayabilir")
+        oneriler.append("Genel havalandirma yeterli olmayabilir")
 
     if not resp:
-        oneriler.append("Respiratör önerilir")
+        oneriler.append("Respirator onerilir")
 
     if not eldiven:
-        oneriler.append("Kimyasal dayanımlı eldiven önerilir")
+        oneriler.append("Kimyasal dayanimli eldiven onerilir")
 
     if not gozluk:
-        oneriler.append("Koruyucu gözlük önerilir")
+        oneriler.append("Koruyucu gozluk onerilir")
 
-    st.subheader("Öneriler")
+    st.subheader("Oneriler")
 
     for o in oneriler:
         st.write("•", o)
 
-    # =========================
+    # =========================================
     # PDF
-    # =========================
+    # =========================================
 
     pdf = FPDF()
 
@@ -301,15 +293,20 @@ if st.button("COSHH Değerlendir"):
 
     pdf.set_auto_page_break(auto=True, margin=15)
 
-    # BAŞLIK
+    # Başlık
 
     pdf.set_font("Helvetica", "B", 18)
 
-    pdf.cell(190, 12, "COSHH RISK REPORT", ln=True)
+    pdf.cell(
+        190,
+        12,
+        "COSHH RISK REPORT",
+        ln=True
+    )
 
     pdf.ln(10)
 
-    # BİLGİLER
+    # Bilgiler
 
     bilgiler = [
 
@@ -330,23 +327,29 @@ if st.button("COSHH Değerlendir"):
 
     ]
 
-for label, value in bilgiler:
+    for label, value in bilgiler:
 
-    pdf.set_x(20)
+        pdf.set_x(20)
 
-    pdf.set_font("Helvetica", "B", 11)
+        pdf.set_font("Helvetica", "B", 11)
 
-    pdf.cell(45, 8, f"{label}:", 0, 0)
+        pdf.cell(
+            45,
+            8,
+            f"{label}:",
+            0,
+            0
+        )
 
-    pdf.set_font("Helvetica", "", 11)
+        pdf.set_font("Helvetica", "", 11)
 
-    pdf.cell(
-        100,
-        8,
-        str(value),
-        0,
-        1
-    )
+        pdf.cell(
+            100,
+            8,
+            str(value),
+            0,
+            1
+        )
 
     pdf.ln(5)
 
@@ -354,7 +357,12 @@ for label, value in bilgiler:
 
     pdf.set_font("Helvetica", "B", 14)
 
-    pdf.cell(190, 10, "PPE", ln=True)
+    pdf.cell(
+        190,
+        10,
+        "PPE",
+        ln=True
+    )
 
     pdf.set_font("Helvetica", "", 11)
 
@@ -370,6 +378,8 @@ for label, value in bilgiler:
 
     for label, value in ppe_list:
 
+        pdf.set_x(20)
+
         pdf.cell(
             190,
             8,
@@ -383,23 +393,33 @@ for label, value in bilgiler:
 
     pdf.set_font("Helvetica", "B", 14)
 
-    pdf.cell(190, 10, "Recommendations", ln=True)
+    pdf.cell(
+        190,
+        10,
+        "Recommendations",
+        ln=True
+    )
 
     pdf.set_font("Helvetica", "", 11)
 
     for o in oneriler:
 
-        pdf.multi_cell(
+        pdf.set_x(20)
+
+        pdf.cell(
             190,
             8,
-            f"- {temizle(o)}"
+            f"- {temizle(o)}",
+            ln=True
         )
 
     pdf.ln(10)
 
-    # TARİH
+    # Tarih
 
     pdf.set_font("Helvetica", "I", 9)
+
+    pdf.set_x(20)
 
     pdf.cell(
         190,
@@ -408,22 +428,22 @@ for label, value in bilgiler:
         ln=True
     )
 
-    # =========================
-    # PDF KAYDET
-    # =========================
+    # =========================================
+    # KAYDET
+    # =========================================
 
     filename = "COSHH_REPORT.pdf"
 
     pdf.output(filename)
 
-    # =========================
+    # =========================================
     # DOWNLOAD
-    # =========================
+    # =========================================
 
     with open(filename, "rb") as f:
 
         st.download_button(
-            "PDF İndir",
+            "PDF Indir",
             f,
             file_name=filename
         )
