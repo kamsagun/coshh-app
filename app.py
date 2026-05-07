@@ -7,6 +7,7 @@ import pandas as pd
 from fpdf import FPDF
 from datetime import datetime
 import random
+
 # =====================================================
 # TURKCE KARAKTER
 # =====================================================
@@ -142,12 +143,18 @@ st.write("Fiziksel Hal:", fiziksel)
 # =====================================================
 
 if st.button("COSHH Değerlendir"):
-rapor_no = (
-    "COSHH-" +
-    str(datetime.now().year) +
-    "-" +
-    str(random.randint(10000,99999))
+
+    # =====================================================
+    # REPORT NUMBER
+    # =====================================================
+
+    rapor_no = (
+        "COSHH-" +
+        str(datetime.now().year) +
+        "-" +
+        str(random.randint(10000,99999))
     )
+
     # =====================================================
     # RISK
     # =====================================================
@@ -329,16 +336,21 @@ rapor_no = (
     # RESULT SCREEN
     # =====================================================
 
-        
+    st.subheader("Rapor No")
+
+    st.code(rapor_no)
+
     st.subheader("Risk Score")
 
     st.metric(
         "Total Risk Score",
         risk
     )
+
     st.progress(
         min(risk / 30, 1.0)
     )
+
     if sonuc == "DUSUK RISK":
 
         st.success(sonuc)
@@ -350,9 +362,6 @@ rapor_no = (
     else:
 
         st.error(sonuc)
-    st.subheader("Rapor No")
-
-    st.code(rapor_no)
 
     st.subheader("Hazard Group")
     st.write(hazard_group)
@@ -361,7 +370,7 @@ rapor_no = (
     st.write(kontrol)
 
     # =====================================================
-    # RECOMMENDATION SCREEN
+    # RECOMMENDATIONS SCREEN
     # =====================================================
 
     st.subheader("Öneriler")
@@ -515,11 +524,10 @@ rapor_no = (
     )
 
     pdf.ln(15)
+
     # =====================================================
     # PDF RECOMMENDATIONS
     # =====================================================
-
-    pdf.ln(10)
 
     pdf.set_font(
         "Helvetica",
