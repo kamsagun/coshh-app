@@ -194,7 +194,7 @@ degerlendiren = st.text_input("Değerlendiren")
 st.divider()
 
 # =====================================================
-# DEĞERLENDİRME
+# DEĞERLENDİR
 # =====================================================
 
 if st.button("COSHH Değerlendir"):
@@ -382,7 +382,19 @@ if st.button("COSHH Değerlendir"):
     # EKRAN SONUÇ
     # =====================================================
 
-    st.header(sonuc)
+    st.subheader("Risk Sonucu")
+
+    if risk <= 5:
+
+        st.success(f"{sonuc} | Risk Skoru: {risk}")
+
+    elif risk <= 10:
+
+        st.warning(f"{sonuc} | Risk Skoru: {risk}")
+
+    else:
+
+        st.error(f"{sonuc} | Risk Skoru: {risk}")
 
     st.write("Hazard Group:", hazard_group)
 
