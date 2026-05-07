@@ -199,7 +199,23 @@ if st.button("COSHH Değerlendir"):
     # =========================================
     # MARUZİYET
     # =========================================
+    # =========================================
+    # FİZİKSEL HAL ETKİSİ
+    # =========================================
 
+    fiziksel_lower = fiziksel.lower()
+
+    if "gaz" in fiziksel_lower:
+        risk += 3
+
+    elif "buhar" in fiziksel_lower:
+        risk += 2
+
+    elif "toz" in fiziksel_lower:
+        risk += 2
+
+    elif "sivi" in fiziksel_lower:
+        risk += 1
     if maruziyet == "Yüksek":
         risk += 3
 
