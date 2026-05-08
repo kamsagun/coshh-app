@@ -208,6 +208,42 @@ if st.button("COSHH Değerlendir"):
         sonuc = "YUKSEK RISK"
 
     # =====================================================
+    # PRIORITY
+    # =====================================================
+
+    if risk >= 25:
+
+        priority = "P1 - Critical"
+
+    elif risk >= 15:
+
+        priority = "P2 - High"
+
+    elif risk >= 8:
+
+        priority = "P3 - Medium"
+
+    else:
+
+        priority = "P4 - Low"
+
+    # =====================================================
+    # REPORT STATUS
+    # =====================================================
+
+    if sonuc == "DUSUK RISK":
+
+        rapor_durumu = "ACCEPTABLE"
+
+    elif sonuc == "ORTA RISK":
+
+        rapor_durumu = "REVIEW REQUIRED"
+
+    else:
+
+        rapor_durumu = "IMMEDIATE ACTION REQUIRED"
+
+    # =====================================================
     # HAZARD GROUP
     # =====================================================
 
@@ -220,51 +256,17 @@ if st.button("COSHH Değerlendir"):
 
         hazard_group = "E"
 
-    elif (
-        "H330" in hkod
-    ):
+    elif "H330" in hkod:
 
         hazard_group = "D"
 
-    elif (
-        "H314" in hkod
-    ):
+    elif "H314" in hkod:
 
         hazard_group = "C"
 
-    elif (
-        "H373" in hkod
-    ):
+    elif "H373" in hkod:
 
         hazard_group = "B"
-
-    # =====================================================
-    # COSHH ESSENTIALS MODIFIER
-    # =====================================================
-
-    if islem == "Püskürtme":
-
-        if hazard_group == "A":
-            hazard_group = "B"
-
-        elif hazard_group == "B":
-            hazard_group = "C"
-
-    if maruziyet == "Yüksek":
-
-        if hazard_group == "A":
-            hazard_group = "B"
-
-        elif hazard_group == "B":
-            hazard_group = "C"
-
-    if miktar >= 100:
-
-        if hazard_group == "A":
-            hazard_group = "B"
-
-        elif hazard_group == "B":
-            hazard_group = "C"
 
     # =====================================================
     # CONTROL APPROACH
@@ -316,41 +318,6 @@ if st.button("COSHH Değerlendir"):
         ghs.append("GHS08")
 
     # =====================================================
-    # PPE VALIDATION
-    # =====================================================
-
-    ppe_uyari = []
-
-    if "H314" in hkod:
-
-        if not gozluk:
-
-            ppe_uyari.append(
-                "H314 icin koruyucu gozluk gerekli"
-            )
-
-        if not yuzsiperi:
-
-            ppe_uyari.append(
-                "H314 icin yuz siperi gerekli"
-            )
-
-    if "H330" in hkod:
-
-        if not resp:
-
-            ppe_uyari.append(
-                "H330 icin respirator zorunlu"
-            )
-
-    if "H373" in hkod:
-
-        if not eldiven:
-
-            ppe_uyari.append(
-                "H373 icin kimyasal eldiven onerilir"
-            )
-    # =====================================================
     # ACTION PLAN
     # =====================================================
 
@@ -395,6 +362,7 @@ if st.button("COSHH Değerlendir"):
         aksiyon_plani.append(
             "Saglik gozetim programi uygulanmali"
         )
+
     # =====================================================
     # RECOMMENDATIONS
     # =====================================================
@@ -413,18 +381,6 @@ if st.button("COSHH Değerlendir"):
             "LEV sistemi onerilir"
         )
 
-    if "H314" in hkod:
-
-        oneriler.append(
-            "Yuz siperi kullanilmali"
-        )
-
-    if "H373" in hkod:
-
-        oneriler.append(
-            "Saglik gozetimi onerilir"
-        )
-
     if not resp:
 
         oneriler.append(
@@ -437,186 +393,11 @@ if st.button("COSHH Değerlendir"):
             "Kimyasal eldiven onerilir"
         )
 
-    if not gozluk:
-
-        oneriler.append(
-            "Koruyucu gozluk onerilir"
-        )
-
-    # =====================================================
-    # EXPOSURE ROUTES
-    # =====================================================
-
-    maruziyet_yollari = []
-
-    if (
-        "H330" in hkod or
-        "gaz" in fiziksel.lower() or
-        "buhar" in fiziksel.lower()
-    ):
-
-        maruziyet_yollari.append(
-            "Inhalasyon Riski"
-        )
-
-    if (
-        "H314" in hkod or
-        "H315" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Deri Temasi Riski"
-        )
-
-    if (
-        "H318" in hkod or
-        "H319" in hkod or
-        "H314" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Goz Temasi Riski"
-        )
-
-    if (
-        "H300" in hkod or
-        "H301" in hkod
-    ):
-
-        maruziyet_yollari.append(
-            "Yutma Riski"
-        )
-
-    # =====================================================
-    # FIRST AID
-    # =====================================================
-
-    ilk_yardim = []
-
-    if "Inhalasyon Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kisiyi temiz havaya cikar"
-        )
-
-        ilk_yardim.append(
-            "Solunum sikintisinda tibbi yardim al"
-        )
-
-    if "Deri Temasi Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kontamine kiyafetleri cikar"
-        )
-
-        ilk_yardim.append(
-            "Bol su ile yika"
-        )
-
-    if "Goz Temasi Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Gozleri en az 15 dakika yika"
-        )
-
-        ilk_yardim.append(
-            "Kontakt lensleri cikar"
-        )
-
-    if "Yutma Riski" in maruziyet_yollari:
-
-        ilk_yardim.append(
-            "Kusturmaya calisma"
-        )
-
-        ilk_yardim.append(
-            "Derhal tibbi yardim al"
-        )
-
-    # =====================================================
-    # EMERGENCY MEASURES
-    # =====================================================
-
-    acil_durum = []
-
-    if "H314" in hkod:
-
-        acil_durum.append(
-            "Goz temasinda bol su ile yika"
-        )
-
-        acil_durum.append(
-            "Acil goz yikama istasyonu gerekli"
-        )
-
-    if "H330" in hkod:
-
-        acil_durum.append(
-            "Temiz havaya cikar"
-        )
-
-        acil_durum.append(
-            "Acil tibbi mudahale gerekli"
-        )
-
-    if (
-        "H225" in hkod or
-        "H226" in hkod
-    ):
-
-        acil_durum.append(
-            "Tutusma kaynaklarindan uzak tut"
-        )
-
-        acil_durum.append(
-            "Yangin sondurucu hazir bulundur"
-        )
-
-    if "H373" in hkod:
-
-        acil_durum.append(
-            "Uzun sureli maruziyet izlenmeli"
-        )
-    # =====================================================
-    # PRIORITY LEVEL
-    # =====================================================
-
-    if risk >= 25:
-
-        priority = "P1 - Critical"
-
-    elif risk >= 15:
-
-        priority = "P2 - High"
-
-    elif risk >= 8:
-
-        priority = "P3 - Medium"
-
-    else:
-
-        priority = "P4 - Low"
-    # =====================================================
-    # REPORT STATUS
-    # =====================================================
-
-    if sonuc == "DUSUK RISK":
-
-        rapor_durumu = "ACCEPTABLE"
-
-    elif sonuc == "ORTA RISK":
-
-        rapor_durumu = "REVIEW REQUIRED"
-
-    else:
-
-        rapor_durumu = "IMMEDIATE ACTION REQUIRED"
     # =====================================================
     # RESULT SCREEN
     # =====================================================
 
     st.subheader("Rapor No")
-
     st.code(rapor_no)
 
     st.subheader("Risk Score")
@@ -642,6 +423,10 @@ if st.button("COSHH Değerlendir"):
 
         st.error(sonuc)
 
+    # =====================================================
+    # PRIORITY SCREEN
+    # =====================================================
+
     st.subheader("Priority Level")
 
     if priority == "P1 - Critical":
@@ -658,8 +443,13 @@ if st.button("COSHH Değerlendir"):
 
     else:
 
-        st.success(priority) 
-        st.subheader("Report Status")
+        st.success(priority)
+
+    # =====================================================
+    # STATUS SCREEN
+    # =====================================================
+
+    st.subheader("Report Status")
 
     if rapor_durumu == "ACCEPTABLE":
 
@@ -672,28 +462,13 @@ if st.button("COSHH Değerlendir"):
     else:
 
         st.error(rapor_durumu)
-        
+
     st.subheader("Hazard Group")
     st.write(hazard_group)
 
     st.subheader("Control Approach")
     st.write(kontrol)
 
-    # =====================================================
-    # PPE WARNINGS
-    # =====================================================
-
-    if len(ppe_uyari) > 0:
-
-        st.subheader("PPE Uyarıları")
-
-        for u in ppe_uyari:
-
-            st.error(u)
-
-    # =====================================================
-    # RECOMMENDATIONS SCREEN
-    # =====================================================
     # =====================================================
     # ACTION PLAN SCREEN
     # =====================================================
@@ -703,41 +478,16 @@ if st.button("COSHH Değerlendir"):
     for a in aksiyon_plani:
 
         st.warning(a)
+
+    # =====================================================
+    # RECOMMENDATIONS SCREEN
+    # =====================================================
+
     st.subheader("Öneriler")
 
     for o in oneriler:
 
         st.write("•", o)
-
-    # =====================================================
-    # EXPOSURE ROUTES SCREEN
-    # =====================================================
-
-    st.subheader("Maruziyet Yolları")
-
-    for m in maruziyet_yollari:
-
-        st.info(m)
-
-    # =====================================================
-    # FIRST AID SCREEN
-    # =====================================================
-
-    st.subheader("İlk Yardım")
-
-    for i in ilk_yardim:
-
-        st.success(i)
-
-    # =====================================================
-    # EMERGENCY SCREEN
-    # =====================================================
-
-    st.subheader("Acil Durum Önlemleri")
-
-    for a in acil_durum:
-
-        st.warning(a)
 
     # =====================================================
     # GHS SCREEN
@@ -748,34 +498,6 @@ if st.button("COSHH Değerlendir"):
     for g in ghs:
 
         st.write("•", g)
-
-        if g == "GHS05":
-
-            st.image(
-                "ghs05.png",
-                width=100
-            )
-
-        if g == "GHS06":
-
-            st.image(
-                "ghs06.png",
-                width=100
-            )
-
-        if g == "GHS07":
-
-            st.image(
-                "ghs07.png",
-                width=100
-            )
-
-        if g == "GHS08":
-
-            st.image(
-                "ghs08.png",
-                width=100
-            )
 
     # =====================================================
     # PDF
@@ -857,38 +579,10 @@ if st.button("COSHH Değerlendir"):
         )
 
     # =====================================================
-    # PDF RISK BAR
+    # PDF ACTION PLAN
     # =====================================================
 
     pdf.ln(5)
-
-    pdf.set_font(
-        "Helvetica",
-        "B",
-        12
-    )
-
-    pdf.cell(
-        190,
-        10,
-        "Risk Visualization",
-        ln=True
-    )
-
-    bar_width = min(risk * 5, 150)
-
-    pdf.rect(
-        20,
-        pdf.get_y(),
-        bar_width,
-        8,
-        "F"
-    )
-
-    pdf.ln(15)
-    # =====================================================
-    # PDF ACTION PLAN
-    # =====================================================
 
     pdf.set_font(
         "Helvetica",
@@ -917,10 +611,11 @@ if st.button("COSHH Değerlendir"):
             f"- {temizle(a)}"
         )
 
-    pdf.ln(5)
     # =====================================================
     # PDF RECOMMENDATIONS
     # =====================================================
+
+    pdf.ln(5)
 
     pdf.set_font(
         "Helvetica",
@@ -1011,9 +706,12 @@ if st.button("COSHH Değerlendir"):
                 "GHS08 - Health Hazard",
                 ln=True
             )
+
     # =====================================================
     # DATE
     # =====================================================
+
+    pdf.ln(5)
 
     pdf.set_font(
         "Helvetica",
