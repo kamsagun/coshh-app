@@ -51,7 +51,7 @@ def load_data():
             if all(col in db.columns for col in needed):
                 return db, "Excel verisi"
         except Exception as exc:
-            st.warning(f"Excel okunamadı, demo verisine geçildi: {temizle(exc)}")
+            st.warning(f"Excel okunamadı, demo verisine geçildi: {exc}")
 
     demo_df = pd.DataFrame(DEMO_RECORDS)
     demo_df.columns = demo_df.columns.astype(str)
