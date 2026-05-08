@@ -73,7 +73,7 @@ def ghs_image_for_code(code):
     return None
 
 
-st.set_page_config(page_title="COSHH Demo", layout="centered", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="COSHH Mobile Demo", layout="centered", initial_sidebar_state="collapsed")
 
 st.title("COSHH Mobile Demo")
 st.caption("Play Store önizlemesi için hızlı demo sürümü")
@@ -115,7 +115,7 @@ otomatik_h = {
     "ASETON": "H225 H319",
 }
 
-if not hkod:
+if not hkod.strip():
     buyuk = temizle(secili).upper()
     if buyuk in otomatik_h:
         hkod = otomatik_h[buyuk]
