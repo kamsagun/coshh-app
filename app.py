@@ -11,6 +11,7 @@ FILE = "020526 COSHH MAKRO.xlsm"
 LOW_RISK_THRESHOLD = 10
 MEDIUM_RISK_THRESHOLD = 20
 GHS_COLUMNS = 5
+QUANTITY_RISK_THRESHOLD_ML = 100
 DEMO_RECORDS = [
     {"Kimyasal Adı": "Aseton", "CAS No": "67-64-1", "H Kodları": "H225 H319", "Fiziksel Hal": "Sıvı"},
     {"Kimyasal Adı": "Metanol", "CAS No": "67-56-1", "H Kodları": "H301 H311 H331", "Fiziksel Hal": "Sıvı"},
@@ -93,7 +94,7 @@ df, data_source = load_data()
 kimyasallar = df["Kimyasal Adı"].dropna().unique()
 
 st.subheader("Firma ve Kimyasal")
-musteri_adi = st.text_input("Müşteri / Firma", value="Demo Müşteri")
+customer_name = st.text_input("Müşteri / Firma", value="Demo Müşteri")
 secili = st.selectbox("Kimyasal Seç", sorted(kimyasallar))
 
 satir = df[df["Kimyasal Adı"] == secili].iloc[0]
@@ -122,7 +123,7 @@ if not hkod:
 st.subheader("Çalışma Bilgileri")
 islem = st.selectbox("İşlem Türü", ["Karıştırma", "Transfer", "Püskürtme", "Isıtma", "Dolum", "Temizlik"])
 sure = st.slider("Çalışma Süresi (saat)", 1, 12, 1)
-miktar_ml = st.number_input("Miktar (ml)", min_value=0.0, value=1.0)
+amount_ml = st.number_input("Miktar (ml)", min_value=0.0, value=1.0)
 maruziyet = st.selectbox("Maruziyet", ["Düşük", "Orta", "Yüksek"])
 
 st.subheader("Çalışma Ortamı")
@@ -137,7 +138,7 @@ gozluk = st.checkbox("Koruyucu Gözlük")
 
 st.divider()
 st.write("Veri Kaynağı:", data_source)
-st.write("Müşteri:", musteri_adi)
+st.write("Müşteri:", customer_name)
 st.write("CAS:", cas)
 st.write("H Kodları:", hkod)
 st.write("Fiziksel Hal:", fiziksel)
@@ -162,7 +163,7 @@ if st.button("COSHH Değerlendir", use_container_width=True):
         risk += 4
     if sure >= 8:
         risk += 3
-    if miktar_ml >= 100:
+    if amount_ml >= QUANTITY_RISK_THRESHOLD_ML:
         risk += 3
     if maruziyet == "Yüksek":
         risk += 4
@@ -244,14 +245,14 @@ if st.button("COSHH Değerlendir", use_container_width=True):
 
     bilgiler = [
         ("Report No", rapor_no),
-        ("Customer", musteri_adi),
+        ("Customer", customer_name),
         ("Chemical", secili),
         ("CAS No", cas),
         ("H Codes", hkod),
         ("Physical State", fiziksel),
         ("Process", islem),
         ("Duration", str(sure)),
-        ("Amount", str(miktar_ml)),
+        ("Amount", str(amount_ml)),
         ("Exposure", maruziyet),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
