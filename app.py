@@ -98,7 +98,9 @@ otomatik_h = {
     "TOLUEN": "H373",
     "KSILEN": "H373",
     "METANOL": "H301 H311 H331",
-    "N,N-DIMETILASETAMID": "H373"
+    "N,N-DIMETILASETAMID": "H373",
+    "ACETON": "H225 H319",
+    "ASIT": "H314"
 
 }
 
@@ -152,6 +154,12 @@ maruziyet = st.selectbox(
     ]
 )
 
+calisan = st.number_input(
+    "Etkilenen Çalışan Sayısı",
+    min_value=1,
+    value=1
+)
+
 # =====================================================
 # ENVIRONMENT
 # =====================================================
@@ -162,6 +170,9 @@ kapali_alan = st.checkbox("Kapalı Alan")
 sicak_islem = st.checkbox("Sıcak İşlem")
 yetersiz_hijyen = st.checkbox("Yetersiz Hijyen")
 dar_alan = st.checkbox("Dar Alan")
+lev = st.checkbox("LEV Sistemi Var")
+acil_dus = st.checkbox("Acil Duş Var")
+patlayici_ortam = st.checkbox("Patlayıcı Atmosfer Riski")
 
 # =====================================================
 # PPE
@@ -223,6 +234,9 @@ if st.button("COSHH Değerlendir"):
     if "H373" in hkod:
         risk += 3
 
+    if "H225" in hkod:
+        risk += 3
+
     if islem == "Püskürtme":
         risk += 4
 
@@ -247,8 +261,20 @@ if st.button("COSHH Değerlendir"):
     if dar_alan:
         risk += 2
 
+    if not lev:
+        risk += 2
+
     if not resp:
         risk += 2
+
+    if "H314" in hkod and not acil_dus:
+        risk += 2
+
+    if calisan >= 10:
+        risk += 2
+
+    if patlayici_ortam:
+        risk += 4
 
     # =====================================================
     # RESULT
@@ -348,6 +374,20 @@ if st.button("COSHH Değerlendir"):
         kontrol = "Control Approach 1"
 
     # =====================================================
+    # FIRE / EXPLOSION
+    # =====================================================
+
+    yangin_riski = "Düşük"
+
+    if "H225" in hkod:
+
+        yangin_riski = "Yüksek"
+
+    if patlayici_ortam:
+
+        yangin_riski = "Kritik"
+
+    # =====================================================
     # GHS
     # =====================================================
 
@@ -375,6 +415,10 @@ if st.button("COSHH Değerlendir"):
     ):
 
         ghs.append("GHS08")
+
+    if "H225" in hkod:
+
+        ghs.append("GHS02")
 
     # =====================================================
     # PPE VALIDATION
@@ -438,16 +482,28 @@ if st.button("COSHH Değerlendir"):
             "Kimyasal eldiven sağlanmalı"
         )
 
-    if islem == "Püskürtme":
+    if islem == "Püskürtme" and not lev:
 
         aksiyon_plani.append(
-            "LEV sistemi kurulumu değerlendirilmeli"
+            "LEV sistemi kurulmalı"
+        )
+
+    if "H314" in hkod and not acil_dus:
+
+        aksiyon_plani.append(
+            "Acil duş istasyonu kurulmalı"
         )
 
     if "H373" in hkod:
 
         aksiyon_plani.append(
             "Sağlık gözetim programı uygulanmalı"
+        )
+
+    if patlayici_ortam:
+
+        aksiyon_plani.append(
+            "ATEX değerlendirmesi yapılmalı"
         )
 
     # =====================================================
@@ -527,10 +583,18 @@ if st.button("COSHH Değerlendir"):
             "Kişiyi temiz havaya çıkar"
         )
 
+        ilk_yardim.append(
+            "Solunum sıkıntısında tıbbi yardım al"
+        )
+
     if "Deri Teması Riski" in maruziyet_yollari:
 
         ilk_yardim.append(
             "Bol su ile yıka"
+        )
+
+        ilk_yardim.append(
+            "Kontamine kıyafetleri çıkar"
         )
 
     if "Göz Teması Riski" in maruziyet_yollari:
@@ -554,7 +618,7 @@ if st.button("COSHH Değerlendir"):
     )
 
     st.progress(
-        min(risk / 30, 1.0)
+        min(risk / 40, 1.0)
     )
 
     if sonuc == "DUSUK RISK":
@@ -615,6 +679,9 @@ if st.button("COSHH Değerlendir"):
     st.subheader("Control Approach")
     st.write(kontrol)
 
+    st.subheader("Yangın / Patlama Riski")
+    st.write(yangin_riski)
+
     # =====================================================
     # PPE WARNINGS
     # =====================================================
@@ -673,50 +740,61 @@ if st.button("COSHH Değerlendir"):
 
     st.subheader("GHS Pictograms")
 
-    cols = st.columns(4)
+    cols = st.columns(5)
 
     for i, g in enumerate(ghs):
 
-        if g == "GHS05":
+        if g == "GHS02":
 
-            with cols[i % 4]:
+            with cols[i % 5]:
+
+                st.image(
+                    "ghs02.png",
+                    width=110
+                )
+
+                st.caption("Flammable")
+
+        elif g == "GHS05":
+
+            with cols[i % 5]:
 
                 st.image(
                     "ghs05.png",
-                    width=120
+                    width=110
                 )
 
                 st.caption("Corrosive")
 
         elif g == "GHS06":
 
-            with cols[i % 4]:
+            with cols[i % 5]:
 
                 st.image(
                     "ghs06.png",
-                    width=120
+                    width=110
                 )
 
                 st.caption("Toxic")
 
         elif g == "GHS07":
 
-            with cols[i % 4]:
+            with cols[i % 5]:
 
                 st.image(
                     "ghs07.png",
-                    width=120
+                    width=110
                 )
 
                 st.caption("Irritant")
 
         elif g == "GHS08":
 
-            with cols[i % 4]:
+            with cols[i % 5]:
 
                 st.image(
                     "ghs08.png",
-                    width=120
+                    width=110
                 )
 
                 st.caption("Health Hazard")
@@ -761,12 +839,14 @@ if st.button("COSHH Değerlendir"):
         ("Duration", f"{sure} hours"),
         ("Amount", str(miktar)),
         ("Exposure", temizle(maruziyet)),
+        ("Affected Workers", calisan),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
         ("Report Status", rapor_durumu),
         ("Risk Score", risk),
         ("Priority Level", priority),
-        ("Control Approach", kontrol)
+        ("Control Approach", kontrol),
+        ("Fire / Explosion Risk", yangin_riski)
 
     ]
 
@@ -893,7 +973,16 @@ if st.button("COSHH Değerlendir"):
 
     for g in ghs:
 
-        if g == "GHS05":
+        if g == "GHS02":
+
+            pdf.cell(
+                190,
+                8,
+                "GHS02 - Flammable",
+                ln=True
+            )
+
+        elif g == "GHS05":
 
             pdf.cell(
                 190,
