@@ -123,7 +123,7 @@ if not hkod.strip():
 st.subheader("Çalışma Bilgileri")
 islem = st.selectbox("İşlem Türü", ["Karıştırma", "Transfer", "Püskürtme", "Isıtma", "Dolum", "Temizlik"])
 sure = st.slider("Çalışma Süresi (saat)", 1, 12, 1)
-amount = st.number_input("Miktar", min_value=0.0, value=1.0)
+miktar = st.number_input("Miktar", min_value=0.0, value=1.0)
 maruziyet = st.selectbox("Maruziyet", ["Düşük", "Orta", "Yüksek"])
 
 st.subheader("Çalışma Ortamı")
@@ -163,7 +163,7 @@ if st.button("COSHH Değerlendir", use_container_width=True):
         risk += 4
     if sure >= 8:
         risk += 3
-    if amount >= QUANTITY_RISK_THRESHOLD:
+    if miktar >= QUANTITY_RISK_THRESHOLD:
         risk += 3
     if maruziyet == "Yüksek":
         risk += 4
@@ -252,7 +252,7 @@ if st.button("COSHH Değerlendir", use_container_width=True):
         ("Physical State", fiziksel),
         ("Process", islem),
         ("Duration", str(sure)),
-        ("Amount", str(amount)),
+        ("Amount", str(miktar)),
         ("Exposure", maruziyet),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
