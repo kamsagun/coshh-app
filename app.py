@@ -350,7 +350,51 @@ if st.button("COSHH Değerlendir"):
             ppe_uyari.append(
                 "H373 icin kimyasal eldiven onerilir"
             )
+    # =====================================================
+    # ACTION PLAN
+    # =====================================================
 
+    aksiyon_plani = []
+
+    if priority == "P1 - Critical":
+
+        aksiyon_plani.append(
+            "Calisma derhal durdurulmali"
+        )
+
+        aksiyon_plani.append(
+            "Yonetim bilgilendirilmeli"
+        )
+
+    if priority == "P2 - High":
+
+        aksiyon_plani.append(
+            "Kontrol onlemleri hizla iyilestirilmeli"
+        )
+
+    if not resp:
+
+        aksiyon_plani.append(
+            "Respirator temin edilmeli"
+        )
+
+    if not eldiven:
+
+        aksiyon_plani.append(
+            "Kimyasal eldiven saglanmali"
+        )
+
+    if islem == "Püskürtme":
+
+        aksiyon_plani.append(
+            "LEV sistemi kurulumu degerlendirilmeli"
+        )
+
+    if "H373" in hkod:
+
+        aksiyon_plani.append(
+            "Saglik gozetim programi uygulanmali"
+        )
     # =====================================================
     # RECOMMENDATIONS
     # =====================================================
@@ -650,7 +694,15 @@ if st.button("COSHH Değerlendir"):
     # =====================================================
     # RECOMMENDATIONS SCREEN
     # =====================================================
+    # =====================================================
+    # ACTION PLAN SCREEN
+    # =====================================================
 
+    st.subheader("Aksiyon Planı")
+
+    for a in aksiyon_plani:
+
+        st.warning(a)
     st.subheader("Öneriler")
 
     for o in oneriler:
@@ -834,7 +886,38 @@ if st.button("COSHH Değerlendir"):
     )
 
     pdf.ln(15)
+    # =====================================================
+    # PDF ACTION PLAN
+    # =====================================================
 
+    pdf.set_font(
+        "Helvetica",
+        "B",
+        14
+    )
+
+    pdf.cell(
+        190,
+        10,
+        "Action Plan",
+        ln=True
+    )
+
+    pdf.set_font(
+        "Helvetica",
+        "",
+        11
+    )
+
+    for a in aksiyon_plani:
+
+        pdf.multi_cell(
+            180,
+            8,
+            f"- {temizle(a)}"
+        )
+
+    pdf.ln(5)
     # =====================================================
     # PDF RECOMMENDATIONS
     # =====================================================
