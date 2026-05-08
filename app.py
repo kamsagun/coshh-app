@@ -79,6 +79,31 @@ hkod = str(satir.get("H Kodları", "-"))
 if "SDS gerekir" in hkod:
 
     hkod = ""
+# =====================================================
+# AUTO H-CODE DATABASE
+# =====================================================
+
+otomatik_h = {
+
+    "AKRILONITRIL": "H350 H340 H330",
+    "FORMALDEHIT": "H350 H341 H314",
+    "BENZEN": "H350 H340",
+    "TOLUEN": "H373",
+    "KSILEN": "H373",
+    "METANOL": "H301 H311 H331",
+    "N,N-DIMETILASETAMID": "H373"
+
+}
+
+if hkod == "":
+
+    kimyasal_buyuk = temizle(secili).upper()
+
+    if kimyasal_buyuk in otomatik_h:
+
+        hkod = otomatik_h[
+            kimyasal_buyuk
+        ]
 fiziksel = str(satir.get("Fiziksel Hal", "-"))
 
 # =====================================================
