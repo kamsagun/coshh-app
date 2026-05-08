@@ -51,8 +51,8 @@ def load_data():
             needed = ["Kimyasal Adı", "CAS No", "H Kodları", "Fiziksel Hal"]
             if all(col in db.columns for col in needed):
                 return db, "Excel verisi"
-        except Exception as exc:
-            st.warning(f"Excel okunamadı, demo verisine geçildi: {exc}")
+        except Exception:
+            st.warning("Excel verisi okunamadı, demo verisine geçildi.")
 
     demo_df = pd.DataFrame(DEMO_RECORDS)
     demo_df.columns = demo_df.columns.astype(str)
