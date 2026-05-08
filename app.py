@@ -116,6 +116,8 @@ if hkod == "":
 # FORM
 # =====================================================
 
+st.subheader("Çalışma Bilgileri")
+
 islem = st.selectbox(
     "İşlem Türü",
     [
@@ -129,14 +131,14 @@ islem = st.selectbox(
 )
 
 sure = st.slider(
-    "Çalışma Süresi",
+    "Çalışma Süresi (Saat)",
     1,
     12,
     1
 )
 
 miktar = st.number_input(
-    "Kullanım Miktarı",
+    "Kullanım Miktarı (kg/L)",
     min_value=0.0,
     value=1.0
 )
@@ -149,6 +151,17 @@ maruziyet = st.selectbox(
         "Yüksek"
     ]
 )
+
+# =====================================================
+# ENVIRONMENT
+# =====================================================
+
+st.subheader("Çalışma Ortamı")
+
+kapali_alan = st.checkbox("Kapalı Alan")
+sicak_islem = st.checkbox("Sıcak İşlem")
+yetersiz_hijyen = st.checkbox("Yetersiz Hijyen")
+dar_alan = st.checkbox("Dar Alan")
 
 # =====================================================
 # PPE
@@ -221,6 +234,18 @@ if st.button("COSHH Değerlendir"):
 
     if maruziyet == "Yüksek":
         risk += 4
+
+    if kapali_alan:
+        risk += 3
+
+    if sicak_islem:
+        risk += 2
+
+    if yetersiz_hijyen:
+        risk += 2
+
+    if dar_alan:
+        risk += 2
 
     if not resp:
         risk += 2
@@ -362,13 +387,13 @@ if st.button("COSHH Değerlendir"):
         if not gozluk:
 
             ppe_uyari.append(
-                "H314 icin koruyucu gozluk gerekli"
+                "H314 için koruyucu gözlük gerekli"
             )
 
         if not yuzsiperi:
 
             ppe_uyari.append(
-                "H314 icin yuz siperi gerekli"
+                "H314 için yüz siperi gerekli"
             )
 
     if "H330" in hkod:
@@ -376,7 +401,7 @@ if st.button("COSHH Değerlendir"):
         if not resp:
 
             ppe_uyari.append(
-                "H330 icin respirator gerekli"
+                "H330 için respiratör gerekli"
             )
 
     # =====================================================
@@ -388,35 +413,41 @@ if st.button("COSHH Değerlendir"):
     if priority == "P1 - Critical":
 
         aksiyon_plani.append(
-            "Calisma derhal durdurulmali"
+            "Çalışma derhal durdurulmalı"
         )
 
         aksiyon_plani.append(
-            "Yonetim bilgilendirilmeli"
+            "Yönetim bilgilendirilmeli"
         )
 
     if priority == "P2 - High":
 
         aksiyon_plani.append(
-            "Kontrol onlemleri hizla iyilestirilmeli"
+            "Kontrol önlemleri hızla iyileştirilmeli"
         )
 
     if not resp:
 
         aksiyon_plani.append(
-            "Respirator temin edilmeli"
+            "Respiratör temin edilmeli"
         )
 
     if not eldiven:
 
         aksiyon_plani.append(
-            "Kimyasal eldiven saglanmali"
+            "Kimyasal eldiven sağlanmalı"
         )
 
     if islem == "Püskürtme":
 
         aksiyon_plani.append(
-            "LEV sistemi kurulumu degerlendirilmeli"
+            "LEV sistemi kurulumu değerlendirilmeli"
+        )
+
+    if "H373" in hkod:
+
+        aksiyon_plani.append(
+            "Sağlık gözetim programı uygulanmalı"
         )
 
     # =====================================================
@@ -428,25 +459,25 @@ if st.button("COSHH Değerlendir"):
     if sonuc == "YUKSEK RISK":
 
         oneriler.append(
-            "Kapali sistem dusunulmeli"
+            "Kapalı sistem düşünülmeli"
         )
 
     if islem == "Püskürtme":
 
         oneriler.append(
-            "LEV sistemi onerilir"
+            "LEV sistemi önerilir"
         )
 
     if not resp:
 
         oneriler.append(
-            "Respirator onerilir"
+            "Respiratör önerilir"
         )
 
     if not eldiven:
 
         oneriler.append(
-            "Kimyasal eldiven onerilir"
+            "Kimyasal eldiven önerilir"
         )
 
     # =====================================================
@@ -462,7 +493,7 @@ if st.button("COSHH Değerlendir"):
     ):
 
         maruziyet_yollari.append(
-            "Inhalasyon Riski"
+            "İnhalasyon Riski"
         )
 
     if (
@@ -471,7 +502,7 @@ if st.button("COSHH Değerlendir"):
     ):
 
         maruziyet_yollari.append(
-            "Deri Temasi Riski"
+            "Deri Teması Riski"
         )
 
     if (
@@ -481,7 +512,7 @@ if st.button("COSHH Değerlendir"):
     ):
 
         maruziyet_yollari.append(
-            "Goz Temasi Riski"
+            "Göz Teması Riski"
         )
 
     # =====================================================
@@ -490,22 +521,22 @@ if st.button("COSHH Değerlendir"):
 
     ilk_yardim = []
 
-    if "Inhalasyon Riski" in maruziyet_yollari:
+    if "İnhalasyon Riski" in maruziyet_yollari:
 
         ilk_yardim.append(
-            "Kisiyi temiz havaya cikar"
+            "Kişiyi temiz havaya çıkar"
         )
 
-    if "Deri Temasi Riski" in maruziyet_yollari:
+    if "Deri Teması Riski" in maruziyet_yollari:
 
         ilk_yardim.append(
-            "Bol su ile yika"
+            "Bol su ile yıka"
         )
 
-    if "Goz Temasi Riski" in maruziyet_yollari:
+    if "Göz Teması Riski" in maruziyet_yollari:
 
         ilk_yardim.append(
-            "Gozleri 15 dakika yika"
+            "Gözleri 15 dakika yıka"
         )
 
     # =====================================================
@@ -539,7 +570,7 @@ if st.button("COSHH Değerlendir"):
         st.error(sonuc)
 
     # =====================================================
-    # PRIORITY SCREEN
+    # PRIORITY
     # =====================================================
 
     st.subheader("Priority Level")
@@ -597,7 +628,7 @@ if st.button("COSHH Değerlendir"):
             st.error(u)
 
     # =====================================================
-    # ACTION PLAN SCREEN
+    # ACTION PLAN
     # =====================================================
 
     st.subheader("Aksiyon Planı")
@@ -637,7 +668,7 @@ if st.button("COSHH Değerlendir"):
         st.success(i)
 
     # =====================================================
-    # GHS PICTOGRAMS
+    # GHS
     # =====================================================
 
     st.subheader("GHS Pictograms")
@@ -762,7 +793,7 @@ if st.button("COSHH Değerlendir"):
         )
 
         pdf.cell(
-            100,
+            120,
             8,
             str(value),
             0,
