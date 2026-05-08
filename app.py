@@ -352,6 +352,34 @@ if st.button("COSHH Değerlendir"):
         ghs.append("GHS08")
 
     # =====================================================
+    # PPE VALIDATION
+    # =====================================================
+
+    ppe_uyari = []
+
+    if "H314" in hkod:
+
+        if not gozluk:
+
+            ppe_uyari.append(
+                "H314 icin koruyucu gozluk gerekli"
+            )
+
+        if not yuzsiperi:
+
+            ppe_uyari.append(
+                "H314 icin yuz siperi gerekli"
+            )
+
+    if "H330" in hkod:
+
+        if not resp:
+
+            ppe_uyari.append(
+                "H330 icin respirator gerekli"
+            )
+
+    # =====================================================
     # ACTION PLAN
     # =====================================================
 
@@ -391,12 +419,6 @@ if st.button("COSHH Değerlendir"):
             "LEV sistemi kurulumu degerlendirilmeli"
         )
 
-    if "H373" in hkod:
-
-        aksiyon_plani.append(
-            "Saglik gozetim programi uygulanmali"
-        )
-
     # =====================================================
     # RECOMMENDATIONS
     # =====================================================
@@ -425,6 +447,65 @@ if st.button("COSHH Değerlendir"):
 
         oneriler.append(
             "Kimyasal eldiven onerilir"
+        )
+
+    # =====================================================
+    # EXPOSURE ROUTES
+    # =====================================================
+
+    maruziyet_yollari = []
+
+    if (
+        "H330" in hkod or
+        "gaz" in fiziksel.lower() or
+        "buhar" in fiziksel.lower()
+    ):
+
+        maruziyet_yollari.append(
+            "Inhalasyon Riski"
+        )
+
+    if (
+        "H314" in hkod or
+        "H315" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Deri Temasi Riski"
+        )
+
+    if (
+        "H318" in hkod or
+        "H319" in hkod or
+        "H314" in hkod
+    ):
+
+        maruziyet_yollari.append(
+            "Goz Temasi Riski"
+        )
+
+    # =====================================================
+    # FIRST AID
+    # =====================================================
+
+    ilk_yardim = []
+
+    if "Inhalasyon Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Kisiyi temiz havaya cikar"
+        )
+
+    if "Deri Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Bol su ile yika"
+        )
+
+    if "Goz Temasi Riski" in maruziyet_yollari:
+
+        ilk_yardim.append(
+            "Gozleri 15 dakika yika"
         )
 
     # =====================================================
@@ -480,7 +561,7 @@ if st.button("COSHH Değerlendir"):
         st.success(priority)
 
     # =====================================================
-    # STATUS SCREEN
+    # REPORT STATUS
     # =====================================================
 
     st.subheader("Report Status")
@@ -504,6 +585,18 @@ if st.button("COSHH Değerlendir"):
     st.write(kontrol)
 
     # =====================================================
+    # PPE WARNINGS
+    # =====================================================
+
+    if len(ppe_uyari) > 0:
+
+        st.subheader("PPE Uyarıları")
+
+        for u in ppe_uyari:
+
+            st.error(u)
+
+    # =====================================================
     # ACTION PLAN SCREEN
     # =====================================================
 
@@ -514,7 +607,7 @@ if st.button("COSHH Değerlendir"):
         st.warning(a)
 
     # =====================================================
-    # RECOMMENDATIONS SCREEN
+    # RECOMMENDATIONS
     # =====================================================
 
     st.subheader("Öneriler")
@@ -524,7 +617,27 @@ if st.button("COSHH Değerlendir"):
         st.write("•", o)
 
     # =====================================================
-    # GHS SCREEN
+    # EXPOSURE ROUTES
+    # =====================================================
+
+    st.subheader("Maruziyet Yolları")
+
+    for m in maruziyet_yollari:
+
+        st.info(m)
+
+    # =====================================================
+    # FIRST AID
+    # =====================================================
+
+    st.subheader("İlk Yardım")
+
+    for i in ilk_yardim:
+
+        st.success(i)
+
+    # =====================================================
+    # GHS PICTOGRAMS
     # =====================================================
 
     st.subheader("GHS Pictograms")
@@ -726,7 +839,7 @@ if st.button("COSHH Değerlendir"):
     # PDF GHS
     # =====================================================
 
-    pdf.ln(8)
+    pdf.ln(5)
 
     pdf.set_font(
         "Helvetica",
@@ -758,7 +871,7 @@ if st.button("COSHH Değerlendir"):
                 ln=True
             )
 
-        if g == "GHS06":
+        elif g == "GHS06":
 
             pdf.cell(
                 190,
@@ -767,7 +880,7 @@ if st.button("COSHH Değerlendir"):
                 ln=True
             )
 
-        if g == "GHS07":
+        elif g == "GHS07":
 
             pdf.cell(
                 190,
@@ -776,7 +889,7 @@ if st.button("COSHH Değerlendir"):
                 ln=True
             )
 
-        if g == "GHS08":
+        elif g == "GHS08":
 
             pdf.cell(
                 190,
@@ -818,7 +931,7 @@ if st.button("COSHH Değerlendir"):
     )
 
     # =====================================================
-    # SAVE
+    # SAVE PDF
     # =====================================================
 
     filename = "COSHH_PRO_REPORT.pdf"
