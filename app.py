@@ -8,6 +8,9 @@ from fpdf import FPDF
 
 
 FILE = "020526 COSHH MAKRO.xlsm"
+LOW_RISK_THRESHOLD = 10
+MEDIUM_RISK_THRESHOLD = 20
+GHS_COLUMNS = 5
 DEMO_RECORDS = [
     {"Kimyasal Adı": "Aseton", "CAS No": "67-64-1", "H Kodları": "H225 H319", "Fiziksel Hal": "Sıvı"},
     {"Kimyasal Adı": "Metanol", "CAS No": "67-56-1", "H Kodları": "H301 H311 H331", "Fiziksel Hal": "Sıvı"},
@@ -47,8 +50,8 @@ def load_data():
             needed = ["Kimyasal Adı", "CAS No", "H Kodları", "Fiziksel Hal"]
             if all(col in db.columns for col in needed):
                 return db, "Excel verisi"
-        except Exception:
-            pass
+        except Exception as exc:
+            st.warning(f"Excel okunamadı, demo verisine geçildi: {temizle(exc)}")
 
     demo_df = pd.DataFrame(DEMO_RECORDS)
     demo_df.columns = demo_df.columns.astype(str)
@@ -119,7 +122,7 @@ if not hkod:
 st.subheader("Çalışma Bilgileri")
 islem = st.selectbox("İşlem Türü", ["Karıştırma", "Transfer", "Püskürtme", "Isıtma", "Dolum", "Temizlik"])
 sure = st.slider("Çalışma Süresi (saat)", 1, 12, 1)
-miktar = st.number_input("Miktar (ml)", min_value=0.0, value=1.0)
+miktar_ml = st.number_input("Miktar (ml)", min_value=0.0, value=1.0)
 maruziyet = st.selectbox("Maruziyet", ["Düşük", "Orta", "Yüksek"])
 
 st.subheader("Çalışma Ortamı")
@@ -159,7 +162,7 @@ if st.button("COSHH Değerlendir", use_container_width=True):
         risk += 4
     if sure >= 8:
         risk += 3
-    if miktar >= 100:
+    if miktar_ml >= 100:
         risk += 3
     if maruziyet == "Yüksek":
         risk += 4
@@ -172,9 +175,9 @@ if st.button("COSHH Değerlendir", use_container_width=True):
     if not resp:
         risk += 2
 
-    if risk <= 10:
+    if risk <= LOW_RISK_THRESHOLD:
         sonuc = "DUSUK RISK"
-    elif risk <= 20:
+    elif risk <= MEDIUM_RISK_THRESHOLD:
         sonuc = "ORTA RISK"
     else:
         sonuc = "YUKSEK RISK"
@@ -223,9 +226,9 @@ if st.button("COSHH Değerlendir", use_container_width=True):
     st.write(kontrol)
 
     st.subheader("GHS Pictograms")
-    cols = st.columns(5)
+    cols = st.columns(GHS_COLUMNS)
     for i, g in enumerate(ghs):
-        with cols[i % 5]:
+        with cols[i % GHS_COLUMNS]:
             image_path = ghs_image_for_code(g)
             if image_path:
                 st.image(image_path, width=90)
@@ -248,7 +251,7 @@ if st.button("COSHH Değerlendir", use_container_width=True):
         ("Physical State", fiziksel),
         ("Process", islem),
         ("Duration", str(sure)),
-        ("Amount", str(miktar)),
+        ("Amount", str(miktar_ml)),
         ("Exposure", maruziyet),
         ("Hazard Group", hazard_group),
         ("Risk Result", sonuc),
