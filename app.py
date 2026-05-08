@@ -76,6 +76,9 @@ satir = df[df["Kimyasal Adı"] == secili].iloc[0]
 
 cas = str(satir.get("CAS No", "-"))
 hkod = str(satir.get("H Kodları", "-"))
+if "SDS gerekir" in hkod:
+
+    hkod = ""
 fiziksel = str(satir.get("Fiziksel Hal", "-"))
 
 # =====================================================
