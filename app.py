@@ -76,9 +76,16 @@ satir = df[df["Kimyasal Adı"] == secili].iloc[0]
 
 cas = str(satir.get("CAS No", "-"))
 hkod = str(satir.get("H Kodları", "-"))
+fiziksel = str(satir.get("Fiziksel Hal", "-"))
+
+# =====================================================
+# H CODE CLEAN
+# =====================================================
+
 if "SDS gerekir" in hkod:
 
     hkod = ""
+
 # =====================================================
 # AUTO H-CODE DATABASE
 # =====================================================
@@ -104,7 +111,6 @@ if hkod == "":
         hkod = otomatik_h[
             kimyasal_buyuk
         ]
-fiziksel = str(satir.get("Fiziksel Hal", "-"))
 
 # =====================================================
 # FORM
@@ -523,9 +529,53 @@ if st.button("COSHH Değerlendir"):
 
     st.subheader("GHS Pictograms")
 
-    for g in ghs:
+    cols = st.columns(4)
 
-        st.write("•", g)
+    for i, g in enumerate(ghs):
+
+        if g == "GHS05":
+
+            with cols[i % 4]:
+
+                st.image(
+                    "ghs05.png",
+                    width=120
+                )
+
+                st.caption("Corrosive")
+
+        elif g == "GHS06":
+
+            with cols[i % 4]:
+
+                st.image(
+                    "ghs06.png",
+                    width=120
+                )
+
+                st.caption("Toxic")
+
+        elif g == "GHS07":
+
+            with cols[i % 4]:
+
+                st.image(
+                    "ghs07.png",
+                    width=120
+                )
+
+                st.caption("Irritant")
+
+        elif g == "GHS08":
+
+            with cols[i % 4]:
+
+                st.image(
+                    "ghs08.png",
+                    width=120
+                )
+
+                st.caption("Health Hazard")
 
     # =====================================================
     # PDF
